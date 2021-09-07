@@ -2,76 +2,76 @@ package com.safetynet.alerts.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.model.Firestations;
-import com.safetynet.alerts.model.MedicalRecords;
-import com.safetynet.alerts.model.Persons;
+import com.safetynet.alerts.model.Person;
 
-public class JacksonService {
+@Service
+public class JacksonService implements IJacksonService {
 
 	File myJsonFile = new File(
 			"D:\\Documents\\OpenClassrooms\\P5-Chambe-Jean-Noel\\alerts-1\\src\\main\\resources\\data.json");
 	ObjectMapper mapper = new ObjectMapper();
 
-	public Persons ReadPersonsFromJson() {
-		Persons obj = null;
+	@Autowired
+	private IPersonService personService;
+	private JsonNode node;
+
+	@PostConstruct
+	public void getData() {
+
 		try {
-			mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-			obj = mapper.readValue(myJsonFile, Persons.class);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			this.node = mapper.readTree(myJsonFile);
 		} catch (IOException e) {
+
 			e.printStackTrace();
 		}
 
-		return obj;
+		initializePersons();
+		initializeFirestations();
+		initializeMedicalrecords();
+
 	}
 
-	public void WritePersonsToJson(Persons allPersons) {
-		try {
+	@Override
+	public void initializePersons() {
 
-			mapper.writeValue(myJsonFile, allPersons);
-		} catch (IOException e) {
-			e.printStackTrace();
+		JsonNode nodePersons = this.node.path("persons");
+		Iterator<JsonNode> iteratorPersons = nodePersons.elements();
+
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			Person person;
+			int numPerson = 0;
+
+			while (iteratorPersons.hasNext()) {
+				person = mapper.treeToValue(nodePersons.get(numPerson), Person.class);
+				personService.addPerson(person);
+				numPerson++;
+				iteratorPersons.next();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 
-	public Firestations ReadFirestationsFromJson() {
-		Firestations obj = null;
-		try {
-			mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-			obj = mapper.readValue(myJsonFile, Firestations.class);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void initializeFirestations() {
+		// TODO Auto-generated method stub
 
-		return obj;
 	}
 
-	public MedicalRecords ReadMedicalRecordsFromJson() {
-		MedicalRecords obj = null;
-		try {
-			mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-			obj = mapper.readValue(myJsonFile, MedicalRecords.class);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void initializeMedicalrecords() {
+		// TODO Auto-generated method stub
 
-		return obj;
 	}
 
 }

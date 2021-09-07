@@ -1,75 +1,103 @@
 package com.safetynet.alerts.repository;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.model.Persons;
-import com.safetynet.alerts.service.JacksonService;
 
 @Repository
-public class PersonRepository {
+public class PersonRepository implements IPersonRepository {
 
-	JacksonService player = new JacksonService();
-	Persons allPersons = player.ReadPersonsFromJson();
+	private List<Person> persons = new ArrayList<Person>();
 
-	public List<Person> getAllPersons() {
-
-		return allPersons.getPersons();
+	public Person save(Person person) {
+		persons.add(person);
+		return person;
 	}
 
-	public Person getInfoAboutOnePerson(String firstname, String lastname) {
-		Person p = new Person();
-
-		for (Integer index = 0; index < allPersons.getPersons().size(); index++) {
-			if (firstname.equalsIgnoreCase(allPersons.getPersons().get(index).getFirstName())
-					&& lastname.equalsIgnoreCase(allPersons.getPersons().get(index).getLastName())) {
-				p.setFirstName(allPersons.getPersons().get(index).getFirstName());
-				p.setLastName(allPersons.getPersons().get(index).getLastName());
-				p.setAddress(allPersons.getPersons().get(index).getAddress());
-				p.setCity(allPersons.getPersons().get(index).getCity());
-				p.setZip(allPersons.getPersons().get(index).getZip());
-				p.setPhone(allPersons.getPersons().get(index).getPhone());
-				p.setEmail(allPersons.getPersons().get(index).getEmail());
-			}
-		}
-		return p;
+	@Override
+	public List<Person> findAllPersons() {
+		return persons;
 	}
 
-	public void updateInfoAboutOnePerson(String firstname, String lastname) throws IOException {
+	@Override
+	public Person readAPerson(String firstname, String lastname) {
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		Iterator<Person> iteratorPersons = persons.iterator();
 
-		for (Integer index = 0; index < allPersons.getPersons().size(); index++) {
-			if (firstname.equalsIgnoreCase(allPersons.getPersons().get(index).getFirstName())
-					&& lastname.equalsIgnoreCase(allPersons.getPersons().get(index).getLastName())) {
-				// ask for keyboard to address, city, zip, phone and email
-				System.out.println("Enter address : ");
-				String addr = reader.readLine();
-				System.out.println("Enter zip : ");
-				String zip = reader.readLine();
-				System.out.println("Enter city : ");
-				String city = reader.readLine();
-				System.out.println("Enter phone : ");
-				String phone = reader.readLine();
-				System.out.println("Enter mail : ");
-				String mail = reader.readLine();
-				// fill data
-				allPersons.getPersons().get(index).setAddress(addr);
-				allPersons.getPersons().get(index).setCity(city);
-				allPersons.getPersons().get(index).setZip(zip);
-				allPersons.getPersons().get(index).setPhone(phone);
-				allPersons.getPersons().get(index).setEmail(mail);
-				// write data to Json file
-				player.WritePersonsToJson(allPersons);
+		try {
+			Integer numPerson = 0;
+			while (iteratorPersons.hasNext()) {
 
+				if (persons.get(numPerson).getFirstName().equalsIgnoreCase(firstname)
+						&& persons.get(numPerson).getLastName().equalsIgnoreCase(lastname)) {
+
+					return persons.get(numPerson);
+				}
+
+				numPerson++;
+				iteratorPersons.next();
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Person updateAPerson(Person person) {
+		Iterator<Person> iteratorPersons = persons.iterator();
+
+		try {
+			Integer numPerson = 0;
+			while (iteratorPersons.hasNext()) {
+
+				if (persons.get(numPerson).getFirstName().equalsIgnoreCase(person.getFirstName())
+						&& persons.get(numPerson).getLastName().equalsIgnoreCase(person.getLastName())) {
+
+					persons.get(numPerson).setAddress("1101 new street");
+					persons.get(numPerson).setZip("H2Z 2HQ");
+					persons.get(numPerson).setCity("Montreal");
+					persons.get(numPerson).setPhone("0123456789");
+					persons.get(numPerson).setEmail("newstreet@gmail.com");
+					return persons.get(numPerson);
+				}
+
+				numPerson++;
+				iteratorPersons.next();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Person deleteAPerson(Person person) {
+		Iterator<Person> iteratorPersons = persons.iterator();
+
+		try {
+			Integer numPerson = 0;
+			while (iteratorPersons.hasNext()) {
+
+				if (persons.get(numPerson).getFirstName().equalsIgnoreCase(person.getFirstName())
+						&& persons.get(numPerson).getLastName().equalsIgnoreCase(person.getLastName())) {
+
+					persons.remove(persons.get(numPerson));
+					return persons.get(numPerson);
+				}
+
+				numPerson++;
+				iteratorPersons.next();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 
+		return null;
 	}
 
 }

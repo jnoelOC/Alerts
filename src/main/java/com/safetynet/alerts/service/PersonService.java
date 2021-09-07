@@ -1,31 +1,39 @@
 package com.safetynet.alerts.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.PersonRepository;
+import com.safetynet.alerts.repository.IPersonRepository;
 
 @Service
-public class PersonService {
+public class PersonService implements IPersonService {
 
 	@Autowired
-	PersonRepository personRepository;
+	IPersonRepository personRepository;
 
 	public List<Person> findAllPersons() {
+		return personRepository.findAllPersons();
 
-		return personRepository.getAllPersons();
 	}
 
-	public Person getOnePerson(String firtsname, String lastname) {
-
-		return personRepository.getInfoAboutOnePerson(firtsname, lastname);
+	@Override
+	public Person addPerson(Person person) {
+		return this.personRepository.save(person);
 	}
 
-	public void updateOnePerson(String firtsname, String lastname) throws IOException {
-		personRepository.updateInfoAboutOnePerson(firtsname, lastname);
+	@Override
+	public Person getOnePerson(String firstName, String lastName) {
+		return this.personRepository.readAPerson(firstName, lastName);
+	}
+
+	public Person updateOnePerson(Person person) {
+		return personRepository.updateAPerson(person);
+	}
+
+	public Person deleteOnePerson(Person person) {
+		return personRepository.deleteAPerson(person);
 	}
 }
