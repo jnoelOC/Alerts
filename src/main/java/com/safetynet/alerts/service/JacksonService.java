@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safetynet.alerts.model.Firestation;
+import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 
 @Service
@@ -22,6 +24,11 @@ public class JacksonService implements IJacksonService {
 
 	@Autowired
 	private IPersonService personService;
+	@Autowired
+	private IFirestationService firestationService;
+//	@Autowired
+//	private IMedicalRecordService medicalrecordService;
+
 	private JsonNode node;
 
 	@PostConstruct
@@ -64,14 +71,46 @@ public class JacksonService implements IJacksonService {
 
 	@Override
 	public void initializeFirestations() {
-		// TODO Auto-generated method stub
+		JsonNode nodeFirestations = this.node.path("firestations");
+		Iterator<JsonNode> iteratorFirestations = nodeFirestations.elements();
 
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+
+			Firestation firestation;
+			int numFirestation = 0;
+
+			while (iteratorFirestations.hasNext()) {
+				firestation = mapper.treeToValue(nodeFirestations.get(numFirestation), Firestation.class);
+				firestationService.addFirestation(firestation);
+				numFirestation++;
+				iteratorFirestations.next();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
 	public void initializeMedicalrecords() {
-		// TODO Auto-generated method stub
+		JsonNode nodeMedicalrecords = this.node.path("medicalrecords");
+		Iterator<JsonNode> iteratorMedicalrecords = nodeMedicalrecords.elements();
 
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+
+			MedicalRecord medicalrecord;
+			int numMedicalrecord = 0;
+
+			while (iteratorMedicalrecords.hasNext()) {
+				medicalrecord = mapper.treeToValue(nodeMedicalrecords.get(numMedicalrecord), MedicalRecord.class);
+//				medicalrecordService.addMedicalrecord(medicalrecord);
+				numMedicalrecord++;
+				iteratorMedicalrecords.next();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 }
