@@ -13,15 +13,18 @@ public class FirestationRepository implements IFirestationRepository {
 
 	private List<Firestation> firestations = new ArrayList<Firestation>();
 
+	@Override
 	public Firestation save(Firestation firestation) {
 		firestations.add(firestation);
 		return firestation;
 	}
 
+	@Override
 	public List<Firestation> findAllFirestations() {
 		return firestations;
 	}
 
+	@Override
 	public Firestation readAFirestation(String Station, String Address) {
 
 		Iterator<Firestation> iteratorFirestations = firestations.iterator();
@@ -46,6 +49,7 @@ public class FirestationRepository implements IFirestationRepository {
 
 	}
 
+	@Override
 	public List<Firestation> readSeveralFirestations(String Station) {
 
 		Iterator<Firestation> iteratorFirestations = firestations.iterator();
@@ -69,6 +73,7 @@ public class FirestationRepository implements IFirestationRepository {
 		return fs;
 	}
 
+	@Override
 	public Firestation updateAFirestation(Firestation firestation) {
 		Iterator<Firestation> iteratorFirestations = firestations.iterator();
 
@@ -94,6 +99,7 @@ public class FirestationRepository implements IFirestationRepository {
 		return null;
 	}
 
+	@Override
 	public void deleteAFirestation(Firestation firestation) {
 		Iterator<Firestation> iteratorFirestations = firestations.iterator();
 

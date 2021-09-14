@@ -62,4 +62,5 @@ public class FirestationController {
 		Firestation firestation = new Firestation(station, address);
 		firestationService.addFirestation(firestation);
 	}
+
 }

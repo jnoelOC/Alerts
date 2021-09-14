@@ -26,8 +26,8 @@ public class JacksonService implements IJacksonService {
 	private IPersonService personService;
 	@Autowired
 	private IFirestationService firestationService;
-//	@Autowired
-//	private IMedicalRecordService medicalrecordService;
+	@Autowired
+	private IMedicalRecordService medicalrecordService;
 
 	private JsonNode node;
 
@@ -104,10 +104,12 @@ public class JacksonService implements IJacksonService {
 
 			while (iteratorMedicalrecords.hasNext()) {
 				medicalrecord = mapper.treeToValue(nodeMedicalrecords.get(numMedicalrecord), MedicalRecord.class);
-//				medicalrecordService.addMedicalrecord(medicalrecord);
+				medicalrecordService.addMedicalRecord(medicalrecord);
 				numMedicalrecord++;
 				iteratorMedicalrecords.next();
 			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

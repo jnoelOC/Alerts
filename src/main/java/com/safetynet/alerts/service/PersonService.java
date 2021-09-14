@@ -14,9 +14,9 @@ public class PersonService implements IPersonService {
 	@Autowired
 	IPersonRepository personRepository;
 
+	@Override
 	public List<Person> findAllPersons() {
 		return personRepository.findAllPersons();
-
 	}
 
 	@Override
@@ -29,10 +29,12 @@ public class PersonService implements IPersonService {
 		return this.personRepository.readAPerson(firstName, lastName);
 	}
 
+	@Override
 	public Person updateOnePerson(Person person) {
 		return personRepository.updateAPerson(person);
 	}
 
+	@Override
 	public Person deleteOnePerson(Person person) {
 		return personRepository.deleteAPerson(person);
 	}
