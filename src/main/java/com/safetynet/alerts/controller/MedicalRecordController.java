@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.safetynet.alerts.dto.MedicalRecordDTO;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.service.IMedicalRecordService;
 
@@ -21,7 +22,7 @@ public class MedicalRecordController {
 	IMedicalRecordService medicalrecordService;
 
 	@GetMapping("/medicalrecords")
-	public List<MedicalRecord> findAllMedicalRecords() {
+	public List<MedicalRecordDTO> findAllMedicalRecords() {
 
 		return medicalrecordService.getAllMedicalRecords();
 	}
@@ -34,9 +35,9 @@ public class MedicalRecordController {
 	}
 
 	@PutMapping("/medicalrecord/update")
-	public void updateMedicalRecord(@RequestBody MedicalRecord medicalrecord) {
+	public void updateMedicalRecord(@RequestBody MedicalRecordDTO medicalrecordDTO) {
 
-		medicalrecordService.updateOneMedicalRecord(medicalrecord);
+		medicalrecordService.updateOneMedicalRecord(medicalrecordDTO);
 	}
 
 	@DeleteMapping("/medicalrecord/delete/{firstName}/{lastName}")
@@ -47,8 +48,8 @@ public class MedicalRecordController {
 	}
 
 	@PostMapping("/medicalrecord/create")
-	public void createMedicalRecordWithBodyParam(@RequestBody MedicalRecord medicalrecord) {
+	public void createMedicalRecordWithBodyParam(@RequestBody MedicalRecordDTO medicalrecordDTO) {
 
-		medicalrecordService.addMedicalRecord(medicalrecord);
+		medicalrecordService.addMedicalRecord(medicalrecordDTO);
 	}
 }

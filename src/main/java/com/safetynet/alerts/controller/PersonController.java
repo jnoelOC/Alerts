@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.safetynet.alerts.dto.PersonDTO;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.IPersonService;
 
@@ -21,7 +22,7 @@ public class PersonController {
 	IPersonService personService;
 
 	@GetMapping("/persons")
-	public List<Person> findAllPersons() {
+	public List<PersonDTO> findAllPersons() {
 
 		return personService.findAllPersons();
 	}
@@ -33,9 +34,9 @@ public class PersonController {
 	}
 
 	@PutMapping("/person/update")
-	public void updatePerson(@RequestBody Person person) {
+	public void updatePerson(@RequestBody PersonDTO personDTO) {
 
-		personService.updateOnePerson(person);
+		personService.updateOnePerson(personDTO);
 	}
 
 	@DeleteMapping("/person/delete/{firstName}/{lastName}")
@@ -46,8 +47,8 @@ public class PersonController {
 	}
 
 	@PostMapping("/person/create")
-	public void createPersonWithBodyParam(@RequestBody Person person) {
+	public void createPersonWithBodyParam(@RequestBody PersonDTO personDTO) {
 
-		personService.addPerson(person);
+		personService.addPerson(personDTO);
 	}
 }

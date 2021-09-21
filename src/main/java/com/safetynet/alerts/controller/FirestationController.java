@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.safetynet.alerts.dto.FirestationDTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.service.IFirestationService;
 
@@ -21,7 +22,7 @@ public class FirestationController {
 	IFirestationService firestationService;
 
 	@GetMapping("/firestations")
-	public List<Firestation> findAllFirestations() {
+	public List<FirestationDTO> findAllFirestations() {
 
 		return firestationService.getAllFirestations();
 	}
@@ -41,9 +42,9 @@ public class FirestationController {
 	}
 
 	@PutMapping("/firestation/update")
-	public void updateFirestation(@RequestBody Firestation firestation) {
+	public void updateFirestation(@RequestBody FirestationDTO firestationDTO) {
 
-		firestationService.updateOneFirestation(firestation);
+		firestationService.updateOneFirestation(firestationDTO);
 	}
 
 	@DeleteMapping("/firestation/delete/{station}/{address}")
@@ -54,8 +55,8 @@ public class FirestationController {
 	}
 
 	@PostMapping("/firestation/create")
-	public void createFirestationWithBodyParam(@RequestBody Firestation firestation) {
+	public void createFirestationWithBodyParam(@RequestBody FirestationDTO firestationDTO) {
 
-		firestationService.addFirestation(firestation);
+		firestationService.addFirestation(firestationDTO);
 	}
 }

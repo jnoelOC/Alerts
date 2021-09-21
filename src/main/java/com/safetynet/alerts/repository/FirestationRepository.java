@@ -53,7 +53,7 @@ public class FirestationRepository implements IFirestationRepository {
 	public List<Firestation> readSeveralFirestations(String Station) {
 
 		Iterator<Firestation> iteratorFirestations = firestations.iterator();
-		List<Firestation> fs = new ArrayList<Firestation>();
+		List<Firestation> fs = new ArrayList<>();
 
 		try {
 			Integer numFirestation = 0;

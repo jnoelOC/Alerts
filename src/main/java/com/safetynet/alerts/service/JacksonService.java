@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.model.Firestation;
-import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.dto.FirestationDTO;
+import com.safetynet.alerts.dto.MedicalRecordDTO;
+import com.safetynet.alerts.dto.PersonDTO;
 
 @Service
 public class JacksonService implements IJacksonService {
@@ -55,12 +55,12 @@ public class JacksonService implements IJacksonService {
 
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			Person person;
+			PersonDTO personDTO;
 			int numPerson = 0;
 
 			while (iteratorPersons.hasNext()) {
-				person = mapper.treeToValue(nodePersons.get(numPerson), Person.class);
-				personService.addPerson(person);
+				personDTO = mapper.treeToValue(nodePersons.get(numPerson), PersonDTO.class);
+				personService.addPerson(personDTO);
 				numPerson++;
 				iteratorPersons.next();
 			}
@@ -77,12 +77,12 @@ public class JacksonService implements IJacksonService {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 
-			Firestation firestation;
+			FirestationDTO firestationDTO;
 			int numFirestation = 0;
 
 			while (iteratorFirestations.hasNext()) {
-				firestation = mapper.treeToValue(nodeFirestations.get(numFirestation), Firestation.class);
-				firestationService.addFirestation(firestation);
+				firestationDTO = mapper.treeToValue(nodeFirestations.get(numFirestation), FirestationDTO.class);
+				firestationService.addFirestation(firestationDTO);
 				numFirestation++;
 				iteratorFirestations.next();
 			}
@@ -99,12 +99,12 @@ public class JacksonService implements IJacksonService {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 
-			MedicalRecord medicalrecord;
+			MedicalRecordDTO medicalrecordDTO;
 			int numMedicalrecord = 0;
 
 			while (iteratorMedicalrecords.hasNext()) {
-				medicalrecord = mapper.treeToValue(nodeMedicalrecords.get(numMedicalrecord), MedicalRecord.class);
-				medicalrecordService.addMedicalRecord(medicalrecord);
+				medicalrecordDTO = mapper.treeToValue(nodeMedicalrecords.get(numMedicalrecord), MedicalRecordDTO.class);
+				medicalrecordService.addMedicalRecord(medicalrecordDTO);
 				numMedicalrecord++;
 				iteratorMedicalrecords.next();
 			}
