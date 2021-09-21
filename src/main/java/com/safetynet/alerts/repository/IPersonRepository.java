@@ -14,5 +14,5 @@ public interface IPersonRepository {
 
 	public Person updateAPerson(Person person);
 
-	public Person deleteAPerson(Person person);
+	public void deleteAPerson(Person person);
 }

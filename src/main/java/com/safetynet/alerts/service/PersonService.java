@@ -20,8 +20,8 @@ public class PersonService implements IPersonService {
 	}
 
 	@Override
-	public Person addPerson(Person person) {
-		return this.personRepository.save(person);
+	public void addPerson(Person person) {
+		this.personRepository.save(person);
 	}
 
 	@Override
@@ -30,12 +30,12 @@ public class PersonService implements IPersonService {
 	}
 
 	@Override
-	public Person updateOnePerson(Person person) {
-		return personRepository.updateAPerson(person);
+	public void updateOnePerson(Person person) {
+		personRepository.updateAPerson(person);
 	}
 
 	@Override
-	public Person deleteOnePerson(Person person) {
-		return personRepository.deleteAPerson(person);
+	public void deleteOnePerson(Person person) {
+		personRepository.deleteAPerson(person);
 	}
 }

@@ -5,13 +5,14 @@ import java.util.List;
 import com.safetynet.alerts.model.Person;
 
 public interface IPersonService {
-	public Person addPerson(Person person);
+	// public Person addPerson(Person person);
+	public void addPerson(Person person);
 
 	public List<Person> findAllPersons();
 
 	public Person getOnePerson(String firstName, String lastName);
 
-	public Person updateOnePerson(Person person);
+	public void updateOnePerson(Person person);
 
-	public Person deleteOnePerson(Person person);
+	public void deleteOnePerson(Person person);
 }

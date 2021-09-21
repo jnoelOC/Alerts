@@ -59,11 +59,11 @@ public class PersonRepository implements IPersonRepository {
 				if (persons.get(numPerson).getFirstName().equalsIgnoreCase(person.getFirstName())
 						&& persons.get(numPerson).getLastName().equalsIgnoreCase(person.getLastName())) {
 
-					persons.get(numPerson).setAddress("1101 new street");
-					persons.get(numPerson).setZip("H2Z 2HQ");
-					persons.get(numPerson).setCity("Montreal");
-					persons.get(numPerson).setPhone("0123456789");
-					persons.get(numPerson).setEmail("newstreet@gmail.com");
+					persons.get(numPerson).setAddress(person.getAddress());
+					persons.get(numPerson).setZip(person.getZip());
+					persons.get(numPerson).setCity(person.getCity());
+					persons.get(numPerson).setPhone(person.getPhone());
+					persons.get(numPerson).setEmail(person.getEmail());
 					return persons.get(numPerson);
 				}
 
@@ -77,7 +77,7 @@ public class PersonRepository implements IPersonRepository {
 	}
 
 	@Override
-	public Person deleteAPerson(Person person) {
+	public void deleteAPerson(Person person) {
 		Iterator<Person> iteratorPersons = persons.iterator();
 
 		try {
@@ -88,17 +88,16 @@ public class PersonRepository implements IPersonRepository {
 						&& persons.get(numPerson).getLastName().equalsIgnoreCase(person.getLastName())) {
 
 					persons.remove(persons.get(numPerson));
-					return persons.get(numPerson);
-				}
+					break;
+				} else {
 
-				numPerson++;
-				iteratorPersons.next();
+					numPerson++;
+					iteratorPersons.next();
+				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
-		return null;
 	}
 
 }

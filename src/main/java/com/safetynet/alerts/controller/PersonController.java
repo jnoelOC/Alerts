@@ -30,17 +30,11 @@ public class PersonController {
 	public Person findOnePerson(@PathVariable String firstName, @PathVariable String lastName) {
 
 		return personService.getOnePerson(firstName, lastName);
-
 	}
 
-	@PutMapping("/person/update/{firstName}/{lastName}")
-	public void updatePerson(@PathVariable String firstName, @PathVariable String lastName,
-			@RequestBody Person person) {
-		// Récupérer l'objet person qui est dans une liste de person grâce à
-		// firstname et lastname
+	@PutMapping("/person/update")
+	public void updatePerson(@RequestBody Person person) {
 
-		person = personService.getOnePerson(firstName, lastName);
-		// Utiliser la méthode update dans repository pour mettre à jour notre objet
 		personService.updateOnePerson(person);
 	}
 
@@ -51,11 +45,9 @@ public class PersonController {
 		personService.deleteOnePerson(person);
 	}
 
-	@PostMapping("/person/create/{firstName}/{lastName}")
-	public void createPerson(@PathVariable String firstName, @PathVariable String lastName) {
+	@PostMapping("/person/create")
+	public void createPersonWithBodyParam(@RequestBody Person person) {
 
-		Person person = new Person(firstName, lastName, "new addr", "new city", "new zip", "new phone", "new phone");
 		personService.addPerson(person);
 	}
-
 }

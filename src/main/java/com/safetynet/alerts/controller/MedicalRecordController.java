@@ -46,16 +46,6 @@ public class MedicalRecordController {
 		medicalrecordService.deleteOneMedicalRecord(medicalrecord);
 	}
 
-	@PostMapping("/medicalrecord/create/{firstName}/{lastName}")
-	public void createMedicalRecord(@PathVariable String firstName, @PathVariable String lastName) {
-
-		String[] medications = { "hydrapermazol:300mg", "dodoxadin:30mg" };
-		String[] allergies = { "shellfish", "ambroisie" };
-		String birthdat = "06/12/1969";
-		MedicalRecord medicalrecord = new MedicalRecord(firstName, lastName, birthdat, medications, allergies);
-		medicalrecordService.addMedicalRecord(medicalrecord);
-	}
-
 	@PostMapping("/medicalrecord/create")
 	public void createMedicalRecordWithBodyParam(@RequestBody MedicalRecord medicalrecord) {
 

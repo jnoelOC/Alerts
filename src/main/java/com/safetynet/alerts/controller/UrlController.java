@@ -16,7 +16,7 @@ public class UrlController {
 	@Autowired
 	IFirestationService firestationService;
 
-	// List of persons covered by corresponding station
+	// URL1 : List of persons covered by corresponding station
 	@GetMapping("/firestation")
 	public TreeMap<String, Person> findPersonsFromFirestation(@RequestParam String stationNumber) {
 

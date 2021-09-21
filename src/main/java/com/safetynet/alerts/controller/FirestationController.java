@@ -40,11 +40,8 @@ public class FirestationController {
 
 	}
 
-	@PutMapping("/firestation/update/{station}/{address}")
-	public void updateFirestation(@PathVariable String station, @PathVariable String address,
-			@RequestBody Firestation firestation) {
-
-		firestation = firestationService.getOneFirestation(address, station);
+	@PutMapping("/firestation/update")
+	public void updateFirestation(@RequestBody Firestation firestation) {
 
 		firestationService.updateOneFirestation(firestation);
 	}
@@ -56,11 +53,9 @@ public class FirestationController {
 		firestationService.deleteOneFirestation(firestation);
 	}
 
-	@PostMapping("/firestation/create/{station}/{address}")
-	public void createFirestation(@PathVariable String station, @PathVariable String address) {
+	@PostMapping("/firestation/create")
+	public void createFirestationWithBodyParam(@RequestBody Firestation firestation) {
 
-		Firestation firestation = new Firestation(station, address);
 		firestationService.addFirestation(firestation);
 	}
-
 }

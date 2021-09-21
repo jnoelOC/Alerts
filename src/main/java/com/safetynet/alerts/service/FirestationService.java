@@ -29,8 +29,8 @@ public class FirestationService implements IFirestationService {
 	}
 
 	@Override
-	public Firestation addFirestation(Firestation firestation) {
-		return this.firestationRepository.save(firestation);
+	public void addFirestation(Firestation firestation) {
+		this.firestationRepository.save(firestation);
 	}
 
 	@Override
@@ -44,8 +44,8 @@ public class FirestationService implements IFirestationService {
 	}
 
 	@Override
-	public Firestation updateOneFirestation(Firestation firestation) {
-		return firestationRepository.updateAFirestation(firestation);
+	public void updateOneFirestation(Firestation firestation) {
+		firestationRepository.updateAFirestation(firestation);
 	}
 
 	@Override

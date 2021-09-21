@@ -88,6 +88,7 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 								.equalsIgnoreCase(medicalrecord.getLastName())) {
 
 					medicalrecords.remove(medicalrecords.get(numMedicalRecord));
+					break;
 
 				} else {
 					numMedicalRecord++;

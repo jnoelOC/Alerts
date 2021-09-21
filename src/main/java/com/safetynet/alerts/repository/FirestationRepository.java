@@ -81,12 +81,9 @@ public class FirestationRepository implements IFirestationRepository {
 			Integer numFirestation = 0;
 			while (iteratorFirestations.hasNext()) {
 
-				if (firestations.get(numFirestation).getStation().equals(firestation.getStation())
-						&& firestations.get(numFirestation).getAddress().equalsIgnoreCase(firestation.getAddress())) {
+				if (firestations.get(numFirestation).getAddress().equalsIgnoreCase(firestation.getAddress())) {
 
-					// firestations.get(numFirestation).setAddress("1101 Montreal street");
-					firestations.get(numFirestation).setStation("9");
-
+					firestations.get(numFirestation).setStation(firestation.getStation());
 					return firestations.get(numFirestation);
 				}
 
@@ -111,7 +108,7 @@ public class FirestationRepository implements IFirestationRepository {
 						&& firestations.get(numFirestation).getAddress().equalsIgnoreCase(firestation.getAddress())) {
 
 					firestations.remove(firestations.get(numFirestation));
-
+					break;
 				} else {
 					numFirestation++;
 					iteratorFirestations.next();
