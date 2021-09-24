@@ -9,12 +9,32 @@ import com.safetynet.alerts.model.Person;
 public class PersonMapper {
 
 	public Person toPerson(PersonDTO personDTO) {
-		return new Person(personDTO.getFirstName(), personDTO.getLastName(), personDTO.getAddress(),
-				personDTO.getCity(), personDTO.getZip(), personDTO.getPhone(), personDTO.getEmail());
+
+		Person person = null;
+		try {
+			person = new Person(personDTO.getFirstName(), personDTO.getLastName(), personDTO.getAddress(),
+					personDTO.getCity(), personDTO.getZip(), personDTO.getPhone(), personDTO.getEmail());
+		} catch (NullPointerException e) {
+			// logger.error("Error null pointer : ", e);
+		} catch (Exception ex) {
+			// logger.error("Error general purpose : ", ex);
+		}
+
+		return person;
+
 	}
 
 	public PersonDTO toPersonDTO(Person person) {
-		return new PersonDTO(person.getFirstName(), person.getLastName(), person.getAddress(), person.getCity(),
-				person.getZip(), person.getPhone(), person.getEmail());
+		PersonDTO personDTO = null;
+		try {
+			personDTO = new PersonDTO(person.getFirstName(), person.getLastName(), person.getAddress(),
+					person.getCity(), person.getZip(), person.getPhone(), person.getEmail());
+		} catch (NullPointerException e) {
+			// logger.error("Error null pointer : ", e);
+		} catch (Exception ex) {
+			// logger.error("Error general purpose : ", ex);
+		}
+
+		return personDTO;
 	}
 }

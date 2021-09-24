@@ -77,8 +77,9 @@ public class PersonRepository implements IPersonRepository {
 	}
 
 	@Override
-	public void deleteAPerson(Person person) {
+	public boolean deleteAPerson(Person person) {
 		Iterator<Person> iteratorPersons = persons.iterator();
+		boolean isRemoved = false;
 
 		try {
 			Integer numPerson = 0;
@@ -88,6 +89,7 @@ public class PersonRepository implements IPersonRepository {
 						&& persons.get(numPerson).getLastName().equalsIgnoreCase(person.getLastName())) {
 
 					persons.remove(persons.get(numPerson));
+					isRemoved = true;
 					break;
 				} else {
 
@@ -96,8 +98,10 @@ public class PersonRepository implements IPersonRepository {
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+
 		}
+
+		return isRemoved;
 	}
 
 }

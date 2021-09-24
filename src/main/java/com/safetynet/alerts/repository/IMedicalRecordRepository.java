@@ -13,5 +13,5 @@ public interface IMedicalRecordRepository {
 
 	public MedicalRecord updateAMedicalRecord(MedicalRecord medicalrecord);
 
-	public void deleteAMedicalRecord(MedicalRecord medicalrecord);
+	public boolean deleteAMedicalRecord(MedicalRecord medicalrecord);
 }

@@ -76,9 +76,9 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 	}
 
 	@Override
-	public void deleteAMedicalRecord(MedicalRecord medicalrecord) {
+	public boolean deleteAMedicalRecord(MedicalRecord medicalrecord) {
 		Iterator<MedicalRecord> iteratorMedicalRecords = medicalrecords.iterator();
-
+		boolean isRemoved = false;
 		try {
 			Integer numMedicalRecord = 0;
 			while (iteratorMedicalRecords.hasNext()) {
@@ -88,6 +88,7 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 								.equalsIgnoreCase(medicalrecord.getLastName())) {
 
 					medicalrecords.remove(medicalrecords.get(numMedicalRecord));
+					isRemoved = true;
 					break;
 
 				} else {
@@ -99,7 +100,7 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
+		return isRemoved;
 	}
 
 }

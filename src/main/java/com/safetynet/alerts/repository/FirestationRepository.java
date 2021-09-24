@@ -97,9 +97,9 @@ public class FirestationRepository implements IFirestationRepository {
 	}
 
 	@Override
-	public void deleteAFirestation(Firestation firestation) {
+	public boolean deleteAFirestation(Firestation firestation) {
 		Iterator<Firestation> iteratorFirestations = firestations.iterator();
-
+		boolean isRemoved = false;
 		try {
 			Integer numFirestation = 0;
 			while (iteratorFirestations.hasNext()) {
@@ -108,6 +108,7 @@ public class FirestationRepository implements IFirestationRepository {
 						&& firestations.get(numFirestation).getAddress().equalsIgnoreCase(firestation.getAddress())) {
 
 					firestations.remove(firestations.get(numFirestation));
+					isRemoved = true;
 					break;
 				} else {
 					numFirestation++;
@@ -118,6 +119,6 @@ public class FirestationRepository implements IFirestationRepository {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
+		return isRemoved;
 	}
 }

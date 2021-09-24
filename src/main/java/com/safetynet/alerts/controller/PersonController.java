@@ -3,6 +3,8 @@ package com.safetynet.alerts.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,27 +30,59 @@ public class PersonController {
 	}
 
 	@GetMapping("/person/{firstName}/{lastName}")
-	public Person findOnePerson(@PathVariable String firstName, @PathVariable String lastName) {
+	public ResponseEntity<PersonDTO> findOnePerson(@PathVariable String firstName, @PathVariable String lastName) {
 
-		return personService.getOnePerson(firstName, lastName);
+		PersonDTO personDTO = personService.getOnePerson(firstName, lastName);
+		if (personDTO == null) {
+			return new ResponseEntity<>(personDTO, HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(personDTO, HttpStatus.FOUND);
+		}
+
 	}
 
 	@PutMapping("/person/update")
-	public void updatePerson(@RequestBody PersonDTO personDTO) {
+	public ResponseEntity<PersonDTO> updatePerson(@RequestBody PersonDTO personDTO) {
 
-		personService.updateOnePerson(personDTO);
+		Person person = personService.updateOnePerson(personDTO);
+		if (person == null) {
+			return new ResponseEntity<>(personDTO, HttpStatus.NOT_MODIFIED);
+		} else {
+			return new ResponseEntity<>(personDTO, HttpStatus.OK);
+		}
 	}
 
 	@DeleteMapping("/person/delete/{firstName}/{lastName}")
-	public void deletePerson(@PathVariable String firstName, @PathVariable String lastName) {
+	public ResponseEntity<Void> deletePerson(@PathVariable String firstName, @PathVariable String lastName) {
 
-		Person person = personService.getOnePerson(firstName, lastName);
-		personService.deleteOnePerson(person);
+		boolean isRemoved = false;
+		try {
+			PersonDTO personDTO = personService.getOnePerson(firstName, lastName);
+			isRemoved = personService.deleteOnePerson(personDTO);
+		} catch (NullPointerException e) {
+			// logger
+		} catch (Exception ex) {
+			// logger
+		}
+
+		if (isRemoved) {
+			return new ResponseEntity<>(HttpStatus.GONE);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
 	}
 
 	@PostMapping("/person/create")
-	public void createPersonWithBodyParam(@RequestBody PersonDTO personDTO) {
+	public ResponseEntity<PersonDTO> createPersonWithBodyParam(@RequestBody PersonDTO personDTO) {
 
-		personService.addPerson(personDTO);
+		Person person = personService.addPerson(personDTO);
+		if (person == null) {
+			return new ResponseEntity<>(personDTO, HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(personDTO, HttpStatus.CREATED);
+		}
+
 	}
+
 }

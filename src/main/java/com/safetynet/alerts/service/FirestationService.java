@@ -36,7 +36,7 @@ public class FirestationService implements IFirestationService {
 	@Override
 	public List<FirestationDTO> getAllFirestations() {
 		List<Firestation> listNotDto = firestationRepository.findAllFirestations();
-		List<FirestationDTO> listFirestationDto = new ArrayList<FirestationDTO>();
+		List<FirestationDTO> listFirestationDto = new ArrayList<>();
 
 		for (Firestation firestation : listNotDto) {
 			FirestationDTO firestationDTO = firestationMapper.toFirestationDTO(firestation);
@@ -46,14 +46,16 @@ public class FirestationService implements IFirestationService {
 	}
 
 	@Override
-	public void addFirestation(FirestationDTO firestationDTO) {
+	public Firestation addFirestation(FirestationDTO firestationDTO) {
 		Firestation firestation = firestationMapper.toFirestation(firestationDTO);
-		this.firestationRepository.save(firestation);
+		return this.firestationRepository.save(firestation);
 	}
 
 	@Override
-	public Firestation getOneFirestation(String station, String address) {
-		return this.firestationRepository.readAFirestation(station, address);
+	public FirestationDTO getOneFirestation(String station, String address) {
+
+		Firestation firestation = this.firestationRepository.readAFirestation(station, address);
+		return firestationMapper.toFirestationDTO(firestation);
 	}
 
 	@Override
@@ -62,14 +64,15 @@ public class FirestationService implements IFirestationService {
 	}
 
 	@Override
-	public void updateOneFirestation(FirestationDTO firestationDTO) {
+	public Firestation updateOneFirestation(FirestationDTO firestationDTO) {
 		Firestation firestation = firestationMapper.toFirestation(firestationDTO);
-		firestationRepository.updateAFirestation(firestation);
+		return firestationRepository.updateAFirestation(firestation);
 	}
 
 	@Override
-	public void deleteOneFirestation(Firestation firestation) {
-		firestationRepository.deleteAFirestation(firestation);
+	public boolean deleteOneFirestation(FirestationDTO firestationDTO) {
+		Firestation firestation = firestationMapper.toFirestation(firestationDTO);
+		return firestationRepository.deleteAFirestation(firestation);
 	}
 
 	// List of persons covered by corresponding station

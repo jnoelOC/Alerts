@@ -35,30 +35,29 @@ public class PersonService implements IPersonService {
 		return listePersonDto;
 	}
 
-//	@Override
-//	public void addPerson(Person person) {
-//		this.personRepository.save(person);
-//	}
-
 	@Override
-	public void addPerson(PersonDTO personDTO) {
+	public Person addPerson(PersonDTO personDTO) {
 		Person person = personMapper.toPerson(personDTO);
-		this.personRepository.save(person);
+		return this.personRepository.save(person);
 	}
 
 	@Override
-	public Person getOnePerson(String firstName, String lastName) {
-		return this.personRepository.readAPerson(firstName, lastName);
+	public PersonDTO getOnePerson(String firstName, String lastName) {
+		Person person = this.personRepository.readAPerson(firstName, lastName);
+		PersonDTO personDTO = personMapper.toPersonDTO(person);
+		return personDTO;
 	}
 
 	@Override
-	public void updateOnePerson(PersonDTO personDTO) {
+	public Person updateOnePerson(PersonDTO personDTO) {
 		Person person = personMapper.toPerson(personDTO);
-		personRepository.updateAPerson(person);
+		return personRepository.updateAPerson(person);
 	}
 
 	@Override
-	public void deleteOnePerson(Person person) {
-		personRepository.deleteAPerson(person);
+	public boolean deleteOnePerson(PersonDTO personDTO) {
+		Person person = personMapper.toPerson(personDTO);
+		return personRepository.deleteAPerson(person);
 	}
+
 }

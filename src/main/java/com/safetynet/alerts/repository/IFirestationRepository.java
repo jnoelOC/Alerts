@@ -16,5 +16,5 @@ public interface IFirestationRepository {
 
 	public Firestation updateAFirestation(Firestation firestation);
 
-	public void deleteAFirestation(Firestation firestation);
+	public boolean deleteAFirestation(Firestation firestation);
 }

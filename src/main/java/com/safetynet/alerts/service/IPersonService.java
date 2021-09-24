@@ -7,7 +7,7 @@ import com.safetynet.alerts.model.Person;
 
 public interface IPersonService {
 
-	public void addPerson(PersonDTO personDTO);
+	public Person addPerson(PersonDTO personDTO);
 
 	// public void addPerson(Person person);
 
@@ -15,9 +15,9 @@ public interface IPersonService {
 
 	public List<PersonDTO> findAllPersons();
 
-	public Person getOnePerson(String firstName, String lastName);
+	public PersonDTO getOnePerson(String firstName, String lastName);
 
-	public void updateOnePerson(PersonDTO personDTO);
+	public Person updateOnePerson(PersonDTO personDTO);
 
-	public void deleteOnePerson(Person person);
+	public boolean deleteOnePerson(PersonDTO personDTO);
 }

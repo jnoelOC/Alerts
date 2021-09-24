@@ -18,8 +18,14 @@ import com.safetynet.alerts.dto.PersonDTO;
 @Service
 public class JacksonService implements IJacksonService {
 
-	File myJsonFile = new File(
-			"D:\\Documents\\OpenClassrooms\\P5-Chambe-Jean-Noel\\alerts-1\\src\\main\\resources\\data.json");
+//	@Autowired
+//	public Environment env;
+
+//	String jsonFolder = env.getProperty("my.jsonFolder");
+//	@Value("${my.jsonFolder}")
+	String jsonFolder = "D:\\Documents\\OpenClassrooms\\P5-Chambe-Jean-Noel\\alerts-1\\src\\main\\resources\\";
+
+	File myJsonFile = new File(jsonFolder, "data.json");
 	ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
@@ -54,7 +60,6 @@ public class JacksonService implements IJacksonService {
 		Iterator<JsonNode> iteratorPersons = nodePersons.elements();
 
 		try {
-			ObjectMapper mapper = new ObjectMapper();
 			PersonDTO personDTO;
 			int numPerson = 0;
 
@@ -75,7 +80,6 @@ public class JacksonService implements IJacksonService {
 		Iterator<JsonNode> iteratorFirestations = nodeFirestations.elements();
 
 		try {
-			ObjectMapper mapper = new ObjectMapper();
 
 			FirestationDTO firestationDTO;
 			int numFirestation = 0;
@@ -97,8 +101,6 @@ public class JacksonService implements IJacksonService {
 		Iterator<JsonNode> iteratorMedicalrecords = nodeMedicalrecords.elements();
 
 		try {
-			ObjectMapper mapper = new ObjectMapper();
-
 			MedicalRecordDTO medicalrecordDTO;
 			int numMedicalrecord = 0;
 

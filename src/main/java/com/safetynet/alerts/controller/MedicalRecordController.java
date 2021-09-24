@@ -3,6 +3,9 @@ package com.safetynet.alerts.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,28 +31,65 @@ public class MedicalRecordController {
 	}
 
 	@GetMapping("/medicalrecord/{firstName}/{lastName}")
-	public MedicalRecord findOneMedicalRecord(@PathVariable String firstName, @PathVariable String lastName) {
+	public ResponseEntity<MedicalRecordDTO> findOneMedicalRecord(@PathVariable String firstName,
+			@PathVariable String lastName) {
 
-		return medicalrecordService.getOneMedicalRecord(firstName, lastName);
+		MedicalRecordDTO oneMrDTO = medicalrecordService.getOneMedicalRecord(firstName, lastName);
+		return new ResponseEntity<>(oneMrDTO, HttpStatus.FOUND);
+
+		// return medicalrecordService.getOneMedicalRecord(firstName, lastName);
 
 	}
 
 	@PutMapping("/medicalrecord/update")
-	public void updateMedicalRecord(@RequestBody MedicalRecordDTO medicalrecordDTO) {
+	public ResponseEntity<MedicalRecordDTO> updateMedicalRecord(
+			@Validated @RequestBody MedicalRecordDTO medicalrecordDTO) {
 
-		medicalrecordService.updateOneMedicalRecord(medicalrecordDTO);
+		MedicalRecord medicalrecord = medicalrecordService.updateOneMedicalRecord(medicalrecordDTO);
+
+		if (medicalrecord == null) {
+			return new ResponseEntity<>(medicalrecordDTO, HttpStatus.NOT_MODIFIED);
+		} else {
+			return new ResponseEntity<>(medicalrecordDTO, HttpStatus.OK);
+		}
 	}
 
 	@DeleteMapping("/medicalrecord/delete/{firstName}/{lastName}")
-	public void deleteMedicalRecord(@PathVariable String firstName, @PathVariable String lastName) {
+	public ResponseEntity<Void> deleteMedicalRecord(@PathVariable String firstName, @PathVariable String lastName) {
+		boolean isRemoved = false;
+		try {
+			MedicalRecordDTO medicalrecordDTO = medicalrecordService.getOneMedicalRecord(firstName, lastName);
+			isRemoved = medicalrecordService.deleteOneMedicalRecord(medicalrecordDTO);
+		} catch (NullPointerException e) {
+			// logger
+		} catch (Exception e) {
+			// logger
+		}
 
-		MedicalRecord medicalrecord = medicalrecordService.getOneMedicalRecord(firstName, lastName);
-		medicalrecordService.deleteOneMedicalRecord(medicalrecord);
+		if (isRemoved) {
+			return new ResponseEntity<>(HttpStatus.GONE);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@PostMapping("/medicalrecord/create")
-	public void createMedicalRecordWithBodyParam(@RequestBody MedicalRecordDTO medicalrecordDTO) {
+	public ResponseEntity<MedicalRecordDTO> createMedicalRecordWithBodyParam(
+			@Validated @RequestBody MedicalRecordDTO medicalrecordDTO) {
 
-		medicalrecordService.addMedicalRecord(medicalrecordDTO);
+		MedicalRecord medicalrecord = medicalrecordService.addMedicalRecord(medicalrecordDTO);
+
+		/// return ResponseEntity.ok().header("headerNameController",
+		/// "headerValueController").body(medicalrecordDTO);
+
+		// HttpHeaders hh = new ResponseEntity<>(medicalrecordDTO,
+		// HttpStatus.CREATED).getHeaders();
+
+		if (medicalrecord == null) {
+			return new ResponseEntity<>(medicalrecordDTO, HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(medicalrecordDTO, HttpStatus.CREATED);
+		}
+
 	}
 }

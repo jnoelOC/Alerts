@@ -3,6 +3,8 @@ package com.safetynet.alerts.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,28 +37,57 @@ public class FirestationController {
 	}
 
 	@GetMapping("/firestation/{station}/{address}")
-	public Firestation findOneFirestation(@PathVariable String station, @PathVariable String address) {
+	public ResponseEntity<FirestationDTO> findOneFirestation(@PathVariable String station,
+			@PathVariable String address) {
 
-		return firestationService.getOneFirestation(station, address);
+		FirestationDTO firestationDTO = firestationService.getOneFirestation(station, address);
+		if (firestationDTO == null) {
+			return new ResponseEntity<>(firestationDTO, HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(firestationDTO, HttpStatus.FOUND);
+		}
 
 	}
 
 	@PutMapping("/firestation/update")
-	public void updateFirestation(@RequestBody FirestationDTO firestationDTO) {
+	public ResponseEntity<FirestationDTO> updateFirestation(@RequestBody FirestationDTO firestationDTO) {
 
-		firestationService.updateOneFirestation(firestationDTO);
+		Firestation firestation = firestationService.updateOneFirestation(firestationDTO);
+		if (firestation == null) {
+			return new ResponseEntity<>(firestationDTO, HttpStatus.NOT_MODIFIED);
+		} else {
+			return new ResponseEntity<>(firestationDTO, HttpStatus.OK);
+		}
 	}
 
 	@DeleteMapping("/firestation/delete/{station}/{address}")
-	public void deleteFirestation(@PathVariable String station, @PathVariable String address) {
+	public ResponseEntity<Void> deleteFirestation(@PathVariable String station, @PathVariable String address) {
+		boolean isRemoved = false;
+		try {
+			FirestationDTO firestationDTO = firestationService.getOneFirestation(address, station);
+			isRemoved = firestationService.deleteOneFirestation(firestationDTO);
 
-		Firestation firestation = firestationService.getOneFirestation(address, station);
-		firestationService.deleteOneFirestation(firestation);
+		} catch (NullPointerException e) {
+			// logger
+		} catch (Exception e) {
+			// logger
+		}
+
+		if (isRemoved) {
+			return new ResponseEntity<>(HttpStatus.GONE);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@PostMapping("/firestation/create")
-	public void createFirestationWithBodyParam(@RequestBody FirestationDTO firestationDTO) {
+	public ResponseEntity<FirestationDTO> createFirestationWithBodyParam(@RequestBody FirestationDTO firestationDTO) {
 
-		firestationService.addFirestation(firestationDTO);
+		Firestation firestation = firestationService.addFirestation(firestationDTO);
+		if (firestation == null) {
+			return new ResponseEntity<>(firestationDTO, HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(firestationDTO, HttpStatus.CREATED);
+		}
 	}
 }

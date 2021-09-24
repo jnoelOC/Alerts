@@ -11,15 +11,15 @@ public interface IFirestationService {
 
 	public List<FirestationDTO> getAllFirestations();
 
-	public Firestation getOneFirestation(String station, String address);
+	public FirestationDTO getOneFirestation(String station, String address);
 
 	public List<Firestation> getSeveralFirestations(String station);
 
-	public void updateOneFirestation(FirestationDTO firestationDTO);
+	public Firestation updateOneFirestation(FirestationDTO firestationDTO);
 
-	public void deleteOneFirestation(Firestation firestation);
+	public boolean deleteOneFirestation(FirestationDTO firestationDTO);
 
 	public TreeMap<String, Person> getPersonsFromFirestations(String stationNumber);
 
-	public void addFirestation(FirestationDTO firestationDTO);
+	public Firestation addFirestation(FirestationDTO firestationDTO);
 }

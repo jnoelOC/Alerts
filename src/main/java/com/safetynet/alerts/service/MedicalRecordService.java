@@ -33,13 +33,24 @@ public class MedicalRecordService implements IMedicalRecordService {
 
 	@Override
 	public MedicalRecord addMedicalRecord(MedicalRecordDTO medicalrecordDTO) {
+
 		MedicalRecord medicalrecord = medicalrecordMapper.toMedicalRecord(medicalrecordDTO);
+
 		return this.medicalrecordRepository.save(medicalrecord);
+
+		// MedicalRecordDTO mrDTO =
+		// medicalrecordMapper.toMedicalRecordDTO(medicalrecord);
+		// return ResponseEntity.ok().header("headerNameService",
+		// "headerValueService").body(medicalrecordDTO);
 	}
 
 	@Override
-	public MedicalRecord getOneMedicalRecord(String firstName, String lastName) {
-		return this.medicalrecordRepository.readAMedicalRecord(firstName, lastName);
+	public MedicalRecordDTO getOneMedicalRecord(String firstName, String lastName) {
+
+		MedicalRecord medicalrecord = this.medicalrecordRepository.readAMedicalRecord(firstName, lastName);
+		MedicalRecordDTO medicalrecordDTO = medicalrecordMapper.toMedicalRecordDTO(medicalrecord);
+		return medicalrecordDTO;
+		// return this.medicalrecordRepository.readAMedicalRecord(firstName, lastName);
 	}
 
 	@Override
@@ -49,7 +60,8 @@ public class MedicalRecordService implements IMedicalRecordService {
 	}
 
 	@Override
-	public void deleteOneMedicalRecord(MedicalRecord medicalrecord) {
-		medicalrecordRepository.deleteAMedicalRecord(medicalrecord);
+	public boolean deleteOneMedicalRecord(MedicalRecordDTO medicalrecordDTO) {
+		MedicalRecord medicalrecord = medicalrecordMapper.toMedicalRecord(medicalrecordDTO);
+		return medicalrecordRepository.deleteAMedicalRecord(medicalrecord);
 	}
 }
