@@ -2,6 +2,8 @@ package com.safetynet.alerts.controller;
 
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +14,7 @@ import com.safetynet.alerts.service.IFirestationService;
 
 @RestController
 public class UrlController {
+	public static final Logger logger = LogManager.getLogger(UrlController.class);
 
 	@Autowired
 	IFirestationService firestationService;

@@ -6,7 +6,10 @@ import java.util.Iterator;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,15 +21,10 @@ import com.safetynet.alerts.dto.PersonDTO;
 @Service
 public class JacksonService implements IJacksonService {
 
-//	@Autowired
-//	public Environment env;
+	public static final Logger logger = LogManager.getLogger(JacksonService.class);
 
-//	String jsonFolder = env.getProperty("my.jsonFolder");
-//	@Value("${my.jsonFolder}")
-	String jsonFolder = "D:\\Documents\\OpenClassrooms\\P5-Chambe-Jean-Noel\\alerts-1\\src\\main\\resources\\";
-
-	File myJsonFile = new File(jsonFolder, "data.json");
-	ObjectMapper mapper = new ObjectMapper();
+	@Value("${jsonFile}")
+	public String jsonFile;
 
 	@Autowired
 	private IPersonService personService;
@@ -37,11 +35,13 @@ public class JacksonService implements IJacksonService {
 
 	private JsonNode node;
 
+	ObjectMapper mapper = new ObjectMapper();
+
 	@PostConstruct
 	public void getData() {
 
 		try {
-			this.node = mapper.readTree(myJsonFile);
+			this.node = mapper.readTree(new File(jsonFile));
 		} catch (IOException e) {
 
 			e.printStackTrace();

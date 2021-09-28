@@ -2,6 +2,8 @@ package com.safetynet.alerts.controller;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.PersonDTO;
-import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.exception.PNotFoundException;
 import com.safetynet.alerts.service.IPersonService;
 
 @RestController
 public class PersonController {
+
+	public static final Logger logger = LogManager.getLogger(PersonController.class);
 
 	@Autowired
 	IPersonService personService;
@@ -26,7 +30,12 @@ public class PersonController {
 	@GetMapping("/persons")
 	public List<PersonDTO> findAllPersons() {
 
-		return personService.findAllPersons();
+		List<PersonDTO> lpDto = personService.findAllPersons();
+
+		if (lpDto.isEmpty() || lpDto == null) {
+			throw new PNotFoundException();
+		}
+		return lpDto;
 	}
 
 	@GetMapping("/person/{firstName}/{lastName}")
@@ -44,11 +53,11 @@ public class PersonController {
 	@PutMapping("/person/update")
 	public ResponseEntity<PersonDTO> updatePerson(@RequestBody PersonDTO personDTO) {
 
-		Person person = personService.updateOnePerson(personDTO);
-		if (person == null) {
-			return new ResponseEntity<>(personDTO, HttpStatus.NOT_MODIFIED);
+		PersonDTO pDTO = personService.updateOnePerson(personDTO);
+		if (pDTO == null) {
+			return new ResponseEntity<>(pDTO, HttpStatus.NOT_FOUND);
 		} else {
-			return new ResponseEntity<>(personDTO, HttpStatus.OK);
+			return new ResponseEntity<>(pDTO, HttpStatus.OK);
 		}
 	}
 
@@ -60,13 +69,13 @@ public class PersonController {
 			PersonDTO personDTO = personService.getOnePerson(firstName, lastName);
 			isRemoved = personService.deleteOnePerson(personDTO);
 		} catch (NullPointerException e) {
-			// logger
+			logger.error("Error : impossible de supprimer la personne. %s ", e.toString());
 		} catch (Exception ex) {
-			// logger
+			logger.error("Error : %s ", ex.toString());
 		}
 
 		if (isRemoved) {
-			return new ResponseEntity<>(HttpStatus.GONE);
+			return new ResponseEntity<>(HttpStatus.FOUND);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -76,11 +85,11 @@ public class PersonController {
 	@PostMapping("/person/create")
 	public ResponseEntity<PersonDTO> createPersonWithBodyParam(@RequestBody PersonDTO personDTO) {
 
-		Person person = personService.addPerson(personDTO);
-		if (person == null) {
-			return new ResponseEntity<>(personDTO, HttpStatus.NOT_FOUND);
+		PersonDTO pDTO = personService.addPerson(personDTO);
+		if (pDTO == null) {
+			return new ResponseEntity<>(pDTO, HttpStatus.NOT_FOUND);
 		} else {
-			return new ResponseEntity<>(personDTO, HttpStatus.CREATED);
+			return new ResponseEntity<>(pDTO, HttpStatus.CREATED);
 		}
 
 	}

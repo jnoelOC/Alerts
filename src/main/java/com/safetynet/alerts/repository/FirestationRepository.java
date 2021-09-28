@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.safetynet.alerts.model.Firestation;
 
 @Repository
 public class FirestationRepository implements IFirestationRepository {
+
+	public static final Logger logger = LogManager.getLogger(FirestationRepository.class);
 
 	private List<Firestation> firestations = new ArrayList<Firestation>();
 

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ import com.safetynet.alerts.utils.FirestationMapper;
 
 @Service
 public class FirestationService implements IFirestationService {
+
+	public static final Logger logger = LogManager.getLogger(FirestationService.class);
+
 	@Autowired
 	IFirestationRepository firestationRepository;
 	@Autowired
@@ -27,7 +32,6 @@ public class FirestationService implements IFirestationService {
 
 	@Autowired
 	IPersonService personService;
-
 	@Autowired
 	IFirestationService firestationService;
 
@@ -46,9 +50,10 @@ public class FirestationService implements IFirestationService {
 	}
 
 	@Override
-	public Firestation addFirestation(FirestationDTO firestationDTO) {
+	public FirestationDTO addFirestation(FirestationDTO firestationDTO) {
 		Firestation firestation = firestationMapper.toFirestation(firestationDTO);
-		return this.firestationRepository.save(firestation);
+		Firestation f = this.firestationRepository.save(firestation);
+		return firestationMapper.toFirestationDTO(f);
 	}
 
 	@Override
@@ -59,14 +64,22 @@ public class FirestationService implements IFirestationService {
 	}
 
 	@Override
-	public List<Firestation> getSeveralFirestations(String station) {
-		return this.firestationRepository.readSeveralFirestations(station);
+	public List<FirestationDTO> getSeveralFirestations(String station) {
+		List<Firestation> listNotDto = this.firestationRepository.readSeveralFirestations(station);
+		List<FirestationDTO> listFirestationDto = new ArrayList<>();
+
+		for (Firestation firestation : listNotDto) {
+			FirestationDTO firestationDTO = firestationMapper.toFirestationDTO(firestation);
+			listFirestationDto.add(firestationDTO);
+		}
+		return listFirestationDto;
 	}
 
 	@Override
-	public Firestation updateOneFirestation(FirestationDTO firestationDTO) {
+	public FirestationDTO updateOneFirestation(FirestationDTO firestationDTO) {
 		Firestation firestation = firestationMapper.toFirestation(firestationDTO);
-		return firestationRepository.updateAFirestation(firestation);
+		Firestation f = firestationRepository.updateAFirestation(firestation);
+		return firestationMapper.toFirestationDTO(f);
 	}
 
 	@Override
@@ -75,14 +88,16 @@ public class FirestationService implements IFirestationService {
 		return firestationRepository.deleteAFirestation(firestation);
 	}
 
+	//////////////////////////////// A REVOIR COMPLETEMENT
+	//////////////////////////////// ////////////////////////////////////
 	// List of persons covered by corresponding station
 	@Override
 	public TreeMap<String, Person> getPersonsFromFirestations(String stationNumber) {
 
-		List<Person> resultingLp = new ArrayList<Person>();
+		List<Person> resultingLp = new ArrayList<>();
 
 		// Retrieve list of stations with the stationNumber
-		List<Firestation> lf = getSeveralFirestations(stationNumber);
+		List<FirestationDTO> lf = getSeveralFirestations(stationNumber);
 
 		// Retrieve list of all persons
 		List<Person> lp = personRepository.findAllPersons(); // utiliser service !!!

@@ -2,6 +2,8 @@ package com.safetynet.alerts.controller;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.FirestationDTO;
-import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.service.IFirestationService;
 
 @RestController
 public class FirestationController {
+
+	public static final Logger logger = LogManager.getLogger(FirestationController.class);
 
 	@Autowired
 	IFirestationService firestationService;
@@ -30,7 +33,7 @@ public class FirestationController {
 	}
 
 	@GetMapping("/firestation/{station}")
-	public List<Firestation> findSeveralFirestation(@PathVariable String station) {
+	public List<FirestationDTO> findSeveralFirestation(@PathVariable String station) {
 
 		return firestationService.getSeveralFirestations(station);
 
@@ -52,11 +55,11 @@ public class FirestationController {
 	@PutMapping("/firestation/update")
 	public ResponseEntity<FirestationDTO> updateFirestation(@RequestBody FirestationDTO firestationDTO) {
 
-		Firestation firestation = firestationService.updateOneFirestation(firestationDTO);
-		if (firestation == null) {
-			return new ResponseEntity<>(firestationDTO, HttpStatus.NOT_MODIFIED);
+		FirestationDTO fDTO = firestationService.updateOneFirestation(firestationDTO);
+		if (fDTO == null) {
+			return new ResponseEntity<>(fDTO, HttpStatus.NOT_MODIFIED);
 		} else {
-			return new ResponseEntity<>(firestationDTO, HttpStatus.OK);
+			return new ResponseEntity<>(fDTO, HttpStatus.OK);
 		}
 	}
 
@@ -83,11 +86,11 @@ public class FirestationController {
 	@PostMapping("/firestation/create")
 	public ResponseEntity<FirestationDTO> createFirestationWithBodyParam(@RequestBody FirestationDTO firestationDTO) {
 
-		Firestation firestation = firestationService.addFirestation(firestationDTO);
-		if (firestation == null) {
-			return new ResponseEntity<>(firestationDTO, HttpStatus.NOT_FOUND);
+		FirestationDTO fDTO = firestationService.addFirestation(firestationDTO);
+		if (fDTO == null) {
+			return new ResponseEntity<>(fDTO, HttpStatus.NOT_FOUND);
 		} else {
-			return new ResponseEntity<>(firestationDTO, HttpStatus.CREATED);
+			return new ResponseEntity<>(fDTO, HttpStatus.CREATED);
 		}
 	}
 }

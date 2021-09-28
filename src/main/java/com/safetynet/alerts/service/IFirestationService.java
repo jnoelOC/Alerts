@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.TreeMap;
 
 import com.safetynet.alerts.dto.FirestationDTO;
-import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.Person;
 
 public interface IFirestationService {
@@ -13,13 +12,13 @@ public interface IFirestationService {
 
 	public FirestationDTO getOneFirestation(String station, String address);
 
-	public List<Firestation> getSeveralFirestations(String station);
+	public List<FirestationDTO> getSeveralFirestations(String station);
 
-	public Firestation updateOneFirestation(FirestationDTO firestationDTO);
+	public FirestationDTO updateOneFirestation(FirestationDTO firestationDTO);
 
 	public boolean deleteOneFirestation(FirestationDTO firestationDTO);
 
 	public TreeMap<String, Person> getPersonsFromFirestations(String stationNumber);
 
-	public Firestation addFirestation(FirestationDTO firestationDTO);
+	public FirestationDTO addFirestation(FirestationDTO firestationDTO);
 }
