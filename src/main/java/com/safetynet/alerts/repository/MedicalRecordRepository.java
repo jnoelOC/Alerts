@@ -19,8 +19,36 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 
 	@Override
 	public MedicalRecord save(MedicalRecord medicalrecord) {
-		medicalrecords.add(medicalrecord);
-		return medicalrecord;
+//		medicalrecords.add(medicalrecord);
+//		return medicalrecord;
+
+		Iterator<MedicalRecord> iteratorMedicalRecords = medicalrecords.iterator();
+		try {
+			boolean mrFound = false;
+			Integer numMedicalRecord = 0;
+			while (iteratorMedicalRecords.hasNext()) {
+
+				if (medicalrecords.get(numMedicalRecord).getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
+						&& medicalrecords.get(numMedicalRecord).getLastName()
+								.equalsIgnoreCase(medicalrecord.getLastName())) {
+
+					mrFound = true;
+					break;
+				}
+
+				numMedicalRecord++;
+				iteratorMedicalRecords.next();
+			}
+			if (!mrFound) {
+				medicalrecords.add(medicalrecord);
+				return medicalrecord;
+			} else { // ALREADY CREATED
+				return null;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

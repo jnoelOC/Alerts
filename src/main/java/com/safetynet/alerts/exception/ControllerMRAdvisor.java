@@ -23,8 +23,19 @@ public class ControllerMRAdvisor extends ResponseEntityExceptionHandler {
 
 		Map<String, Object> body = new LinkedHashMap<>();
 		body.put("timestamp", LocalDateTime.now());
-		body.put("message", "MedicalRecords not found");
+		body.put("message", "MedicalRecords not found.");
 
 		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(MRAlreadyCreatedException.class)
+	public ResponseEntity<Object> handleMedicalRecordAlreadyCreatedException(MRAlreadyCreatedException ex,
+			WebRequest request) {
+
+		Map<String, Object> body = new LinkedHashMap<>();
+		body.put("timestamp", LocalDateTime.now());
+		body.put("message", "MedicalRecord already created.");
+
+		return new ResponseEntity<>(body, HttpStatus.FOUND);
 	}
 }

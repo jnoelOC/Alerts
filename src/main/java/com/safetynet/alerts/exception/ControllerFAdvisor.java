@@ -14,26 +14,27 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class ControllerPAdvisor extends ResponseEntityExceptionHandler {
+public class ControllerFAdvisor extends ResponseEntityExceptionHandler {
 
-	public static final Logger myLogger = LogManager.getLogger(ControllerPAdvisor.class);
+	public static final Logger myLogger = LogManager.getLogger(ControllerFAdvisor.class);
 
-	@ExceptionHandler(PNotFoundException.class)
-	public ResponseEntity<Object> handlePersonNotFoundException(PNotFoundException ex, WebRequest request) {
+	@ExceptionHandler(FNotFoundException.class)
+	public ResponseEntity<Object> handleFirestationNotFoundException(FNotFoundException ex, WebRequest request) {
 
 		Map<String, Object> body = new LinkedHashMap<>();
 		body.put("timestamp", LocalDateTime.now());
-		body.put("message", "Persons not found.");
+		body.put("message", "Firestations not found.");
 
 		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(PAlreadyCreatedException.class)
-	public ResponseEntity<Object> handlePersonNotFoundException(PAlreadyCreatedException ex, WebRequest request) {
+	@ExceptionHandler(FAlreadyCreatedException.class)
+	public ResponseEntity<Object> handleFirestationAlreadyCreatedException(FAlreadyCreatedException ex,
+			WebRequest request) {
 
 		Map<String, Object> body = new LinkedHashMap<>();
 		body.put("timestamp", LocalDateTime.now());
-		body.put("message", "Person already created.");
+		body.put("message", "Firestation already created.");
 
 		return new ResponseEntity<>(body, HttpStatus.FOUND);
 	}

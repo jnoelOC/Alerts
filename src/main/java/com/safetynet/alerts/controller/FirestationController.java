@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.FirestationDTO;
+import com.safetynet.alerts.exception.FAlreadyCreatedException;
 import com.safetynet.alerts.service.IFirestationService;
 
 @RestController
@@ -77,7 +78,7 @@ public class FirestationController {
 		}
 
 		if (isRemoved) {
-			return new ResponseEntity<>(HttpStatus.GONE);
+			return new ResponseEntity<>(HttpStatus.FOUND);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -88,7 +89,8 @@ public class FirestationController {
 
 		FirestationDTO fDTO = firestationService.addFirestation(firestationDTO);
 		if (fDTO == null) {
-			return new ResponseEntity<>(fDTO, HttpStatus.NOT_FOUND);
+			// return new ResponseEntity<>(fDTO, HttpStatus.NOT_FOUND);
+			throw new FAlreadyCreatedException();
 		} else {
 			return new ResponseEntity<>(fDTO, HttpStatus.CREATED);
 		}

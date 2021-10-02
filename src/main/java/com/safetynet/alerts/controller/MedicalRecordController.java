@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.MedicalRecordDTO;
+import com.safetynet.alerts.exception.MRAlreadyCreatedException;
 import com.safetynet.alerts.exception.MRNotFoundException;
 import com.safetynet.alerts.service.IMedicalRecordService;
 
@@ -69,15 +70,17 @@ public class MedicalRecordController {
 		boolean isRemoved = false;
 		try {
 			MedicalRecordDTO medicalrecordDTO = medicalrecordService.getOneMedicalRecord(firstName, lastName);
-			isRemoved = medicalrecordService.deleteOneMedicalRecord(medicalrecordDTO);
+			if (medicalrecordDTO != null) {
+				isRemoved = medicalrecordService.deleteOneMedicalRecord(medicalrecordDTO);
+			}
 		} catch (NullPointerException e) {
-			logger.error("Error : impossible de supprimer ce medical record. %s ", e);
+			logger.error(String.format("Error : impossible de supprimer ce medical record. %s ", e));
 		} catch (Exception e) {
 			// logger
 		}
 
 		if (isRemoved) {
-			return new ResponseEntity<>(HttpStatus.GONE);
+			return new ResponseEntity<>(HttpStatus.FOUND);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -90,7 +93,7 @@ public class MedicalRecordController {
 		MedicalRecordDTO mrDTO = medicalrecordService.addMedicalRecord(medicalrecordDTO);
 
 		if (mrDTO == null) {
-			return new ResponseEntity<>(mrDTO, HttpStatus.NOT_FOUND);
+			throw new MRAlreadyCreatedException();
 		} else {
 			return new ResponseEntity<>(mrDTO, HttpStatus.CREATED);
 		}

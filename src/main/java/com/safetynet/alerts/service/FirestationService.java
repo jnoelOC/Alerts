@@ -51,9 +51,16 @@ public class FirestationService implements IFirestationService {
 
 	@Override
 	public FirestationDTO addFirestation(FirestationDTO firestationDTO) {
+		FirestationDTO fDTO;
 		Firestation firestation = firestationMapper.toFirestation(firestationDTO);
 		Firestation f = this.firestationRepository.save(firestation);
-		return firestationMapper.toFirestationDTO(f);
+
+		if (f == null) {
+			fDTO = null;
+		} else {
+			fDTO = firestationMapper.toFirestationDTO(f);
+		}
+		return fDTO;
 	}
 
 	@Override

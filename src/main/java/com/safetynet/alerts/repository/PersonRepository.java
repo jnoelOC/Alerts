@@ -19,8 +19,34 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public Person save(Person person) {
-		persons.add(person);
-		return person;
+
+		Iterator<Person> iteratorPersons = persons.iterator();
+
+		try {
+			boolean pFound = false;
+			Integer numPerson = 0;
+			while (iteratorPersons.hasNext()) {
+
+				if (persons.get(numPerson).getFirstName().equalsIgnoreCase(person.getFirstName())
+						&& persons.get(numPerson).getLastName().equalsIgnoreCase(person.getLastName())) {
+
+					pFound = true;
+					break;
+				}
+
+				numPerson++;
+				iteratorPersons.next();
+			}
+			if (!pFound) {
+				persons.add(person);
+				return person;
+			} else { // ALREADY CREATED
+				return null;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

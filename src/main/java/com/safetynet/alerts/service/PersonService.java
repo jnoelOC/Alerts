@@ -38,9 +38,16 @@ public class PersonService implements IPersonService {
 
 	@Override
 	public PersonDTO addPerson(PersonDTO personDTO) {
+		PersonDTO pDTO;
 		Person person = personMapper.toPerson(personDTO);
 		Person p = this.personRepository.save(person);
-		return personMapper.toPersonDTO(p);
+
+		if (p == null) {
+			pDTO = null;
+		} else {
+			pDTO = personMapper.toPersonDTO(p);
+		}
+		return pDTO;
 	}
 
 	@Override

@@ -39,9 +39,15 @@ public class MedicalRecordService implements IMedicalRecordService {
 	@Override
 	public MedicalRecordDTO addMedicalRecord(MedicalRecordDTO medicalrecordDTO) {
 
+		MedicalRecordDTO mrDTO;
 		MedicalRecord medicalrecord = medicalrecordMapper.toMedicalRecord(medicalrecordDTO);
 		MedicalRecord mr = this.medicalrecordRepository.save(medicalrecord);
-		return medicalrecordMapper.toMedicalRecordDTO(mr);
+		if (mr == null) {
+			mrDTO = null;
+		} else {
+			mrDTO = medicalrecordMapper.toMedicalRecordDTO(mr);
+		}
+		return mrDTO;
 	}
 
 	@Override
@@ -55,7 +61,6 @@ public class MedicalRecordService implements IMedicalRecordService {
 			medicalrecordDTO = medicalrecordMapper.toMedicalRecordDTO(medicalrecord);
 		}
 		return medicalrecordDTO;
-		// return this.medicalrecordRepository.readAMedicalRecord(firstName, lastName);
 	}
 
 	@Override

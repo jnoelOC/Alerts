@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.PersonDTO;
+import com.safetynet.alerts.exception.PAlreadyCreatedException;
 import com.safetynet.alerts.exception.PNotFoundException;
 import com.safetynet.alerts.service.IPersonService;
 
@@ -87,7 +88,8 @@ public class PersonController {
 
 		PersonDTO pDTO = personService.addPerson(personDTO);
 		if (pDTO == null) {
-			return new ResponseEntity<>(pDTO, HttpStatus.NOT_FOUND);
+			// return new ResponseEntity<>(pDTO, HttpStatus.NOT_FOUND);
+			throw new PAlreadyCreatedException();
 		} else {
 			return new ResponseEntity<>(pDTO, HttpStatus.CREATED);
 		}

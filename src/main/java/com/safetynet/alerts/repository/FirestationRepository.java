@@ -19,8 +19,35 @@ public class FirestationRepository implements IFirestationRepository {
 
 	@Override
 	public Firestation save(Firestation firestation) {
-		firestations.add(firestation);
-		return firestation;
+
+		Iterator<Firestation> iteratorFirestations = firestations.iterator();
+
+		try {
+			boolean fFound = false;
+			Integer numFirestation = 0;
+			while (iteratorFirestations.hasNext()) {
+
+				if (firestations.get(numFirestation).getAddress().equalsIgnoreCase(firestation.getAddress())) {
+
+					fFound = true;
+					break;
+				}
+
+				numFirestation++;
+				iteratorFirestations.next();
+			}
+
+			if (!fFound) {
+				firestations.add(firestation);
+				return firestation;
+			} else { // ALREADY CREATED
+				return null;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+
 	}
 
 	@Override
