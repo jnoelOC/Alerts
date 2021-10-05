@@ -14,8 +14,6 @@ public class Alerts1Application {
 		logger.info("Initializing SafetyNet");
 		SpringApplication.run(Alerts1Application.class, args);
 
-//		final Environment env;
-//		String json = env.getProperty("my.jsonFolder");
 	}
 
 }

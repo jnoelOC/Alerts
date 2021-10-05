@@ -15,7 +15,7 @@ public class PersonMapper {
 			person = new Person(personDTO.getFirstName(), personDTO.getLastName(), personDTO.getAddress(),
 					personDTO.getCity(), personDTO.getZip(), personDTO.getPhone(), personDTO.getEmail());
 		} catch (NullPointerException e) {
-			// logger.error("Error null pointer : ", e);
+			// logger.error("Error null pointer : " + e);
 		} catch (Exception ex) {
 			// logger.error("Error general purpose : ", ex);
 		}

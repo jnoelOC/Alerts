@@ -69,4 +69,11 @@ public class PersonService implements IPersonService {
 		return personRepository.deleteAPerson(person);
 	}
 
+	// URL7
+	public List<String> getAllEmailsFrom(String city) {
+		List<String> ls = null;
+
+		ls = this.personRepository.getEmailsFrom(city);
+		return ls;
+	}
 }

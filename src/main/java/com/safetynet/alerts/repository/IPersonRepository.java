@@ -15,4 +15,7 @@ public interface IPersonRepository {
 	public Person updateAPerson(Person person);
 
 	public boolean deleteAPerson(Person person);
+
+	// URL7
+	public List<String> getEmailsFrom(String city);
 }
