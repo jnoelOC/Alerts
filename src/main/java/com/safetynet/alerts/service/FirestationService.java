@@ -1,7 +1,9 @@
 package com.safetynet.alerts.service;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.safetynet.alerts.dto.FirestationDTO;
+import com.safetynet.alerts.dto.MedicalRecordDTO;
+import com.safetynet.alerts.dto.PersonDTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
@@ -17,6 +21,8 @@ import com.safetynet.alerts.repository.IFirestationRepository;
 import com.safetynet.alerts.repository.IMedicalRecordRepository;
 import com.safetynet.alerts.repository.IPersonRepository;
 import com.safetynet.alerts.utils.FirestationMapper;
+import com.safetynet.alerts.utils.MedicalRecordMapper;
+import com.safetynet.alerts.utils.PersonMapper;
 
 @Service
 public class FirestationService implements IFirestationService {
@@ -33,12 +39,14 @@ public class FirestationService implements IFirestationService {
 	@Autowired
 	IPersonService personService;
 	@Autowired
-	IFirestationService firestationService;
+	IMedicalRecordService medicalRecordService;
 
 	private FirestationMapper firestationMapper = new FirestationMapper();
+	private PersonMapper personMapper = new PersonMapper();
+	private MedicalRecordMapper medicalrecordMapper = new MedicalRecordMapper();
 
-	@Override
 	public List<FirestationDTO> getAllFirestations() {
+		// utiliser Service !?!?!
 		List<Firestation> listNotDto = firestationRepository.findAllFirestations();
 		List<FirestationDTO> listFirestationDto = new ArrayList<>();
 
@@ -49,7 +57,6 @@ public class FirestationService implements IFirestationService {
 		return listFirestationDto;
 	}
 
-	@Override
 	public FirestationDTO addFirestation(FirestationDTO firestationDTO) {
 		FirestationDTO fDTO;
 		Firestation firestation = firestationMapper.toFirestation(firestationDTO);
@@ -63,14 +70,12 @@ public class FirestationService implements IFirestationService {
 		return fDTO;
 	}
 
-	@Override
 	public FirestationDTO getOneFirestation(String station, String address) {
 
 		Firestation firestation = this.firestationRepository.readAFirestation(station, address);
 		return firestationMapper.toFirestationDTO(firestation);
 	}
 
-	@Override
 	public List<FirestationDTO> getSeveralFirestations(String station) {
 		List<Firestation> listNotDto = this.firestationRepository.readSeveralFirestations(station);
 		List<FirestationDTO> listFirestationDto = new ArrayList<>();
@@ -82,14 +87,12 @@ public class FirestationService implements IFirestationService {
 		return listFirestationDto;
 	}
 
-	@Override
 	public FirestationDTO updateOneFirestation(FirestationDTO firestationDTO) {
 		Firestation firestation = firestationMapper.toFirestation(firestationDTO);
 		Firestation f = firestationRepository.updateAFirestation(firestation);
 		return firestationMapper.toFirestationDTO(f);
 	}
 
-	@Override
 	public boolean deleteOneFirestation(FirestationDTO firestationDTO) {
 		Firestation firestation = firestationMapper.toFirestation(firestationDTO);
 		return firestationRepository.deleteAFirestation(firestation);
@@ -97,54 +100,65 @@ public class FirestationService implements IFirestationService {
 
 	//////////////////////////////// A REVOIR COMPLETEMENT
 	//////////////////////////////// ////////////////////////////////////
-	// List of persons covered by corresponding station
-	@Override
-	public TreeMap<String, Person> getPersonsFromFirestations(String stationNumber) {
+	// URL1 - List of persons (with nb of children and adults) covered
+	// by corresponding station
 
-		List<Person> resultingLp = new ArrayList<>();
+	public SortedMap<String, Person> getPersonsWithBirthdatesFromFirestations(String stationNumber) {
 
-		// Retrieve list of stations with the stationNumber
-		List<FirestationDTO> lf = getSeveralFirestations(stationNumber);
+		SortedMap<String, Person> personsWithBirthDates = new TreeMap<>();
+		try {
+			// Retrieve list of stations with the stationNumber
+			List<FirestationDTO> listOfFirestationsDTO = getSeveralFirestations(stationNumber);
+			List<Firestation> listOfFirestations = new ArrayList<>();
+			for (FirestationDTO oneFirestationDTO : listOfFirestationsDTO) {
+				listOfFirestations.add(firestationMapper.toFirestation(oneFirestationDTO));
+			}
 
-		// Retrieve list of all persons
-		List<Person> lp = personRepository.findAllPersons(); // utiliser service !!!
-//		List<Person> lp2 = personService.findAllPersons();
+			// Retrieve list of all persons
+			List<PersonDTO> listOfPersonsDTO = personService.findAllPersons();
+			List<Person> listOfPersons = new ArrayList<>();
+			for (PersonDTO personDTO : listOfPersonsDTO) {
+				listOfPersons.add(personMapper.toPerson(personDTO));
+			}
 
-		// Retrieve a list of persons by comparing address of persons with address of
-		// stations
-		for (int numPerson = 0; numPerson < lp.size(); numPerson++) {
-			for (int numFirestation = 0; numFirestation < lf.size(); numFirestation++) {
-				if (lp.get(numPerson).getAddress().equalsIgnoreCase(lf.get(numFirestation).getAddress())) {
+			// Retrieve a list of persons by comparing address of persons with address of
+			// stations
+			List<Person> listOfPersonsWithSameAddressOfStation = new ArrayList<>();
+			for (Firestation oneFirestation : listOfFirestations) {
+				for (Person onePerson : listOfPersons) {
 
-					resultingLp.add(lp.get(numPerson));
-					break;
+					if (onePerson.getAddress().equalsIgnoreCase(oneFirestation.getAddress())) {
+
+						listOfPersonsWithSameAddressOfStation.add(onePerson);
+					}
 				}
 			}
-		}
 
-		TreeMap<String, Person> personsWithBirthDates = new TreeMap<String, Person>();
+			// Retrieve list of all medical records
+			List<MedicalRecordDTO> listOfMedRecDTO = medicalRecordService.getAllMedicalRecords();
+			List<MedicalRecord> listOfMedRec = new ArrayList<>();
+			for (MedicalRecordDTO oneMedRecDTO : listOfMedRecDTO) {
+				listOfMedRec.add(medicalrecordMapper.toMedicalRecord(oneMedRecDTO));
+			}
 
-		// Retrieve list of all medicalrecords
-		List<MedicalRecord> lmr = medicalrecordRepository.findAllMedicalRecords();
+			// Retrieve a list of birth dates in medical records associated with persons
+			for (MedicalRecord oneMedRec : listOfMedRec) {
+				for (Person onePerson : listOfPersonsWithSameAddressOfStation) {
+					if (oneMedRec.getFirstName().equalsIgnoreCase(onePerson.getFirstName())
+							&& oneMedRec.getLastName().equalsIgnoreCase(onePerson.getLastName())) {
 
-		// Retrieve a list of birthdate in medicalrecords with persons
-		// for(MedicalRecord mr : lmr) {
-		// }
-		for (int numMedicRec = 0; numMedicRec < lmr.size(); numMedicRec++) {
-			for (int numPerson = 0; numPerson < resultingLp.size(); numPerson++) {
-				if (lmr.get(numMedicRec).getFirstName().equalsIgnoreCase(resultingLp.get(numPerson).getFirstName())
-						&& lmr.get(numMedicRec).getLastName()
-								.equalsIgnoreCase(resultingLp.get(numPerson).getLastName())) {
-
-					personsWithBirthDates.put(lmr.get(numMedicRec).getBirthDate(), resultingLp.get(numPerson));
+						personsWithBirthDates.put(oneMedRec.getBirthDate(), onePerson);
+					}
 				}
 			}
+
+			// Calculate number of adults and number of children
+
+			// only firstName, lastName, address, phone
+		} catch (Exception ex) {
+
+			logger.error(MessageFormat.format("Error : {0}.", ex.getMessage()));
 		}
-
-		// Calculate number of adults and number of children
-
-		// only firstName, lastName, address, phone
-
 		return personsWithBirthDates;
 	}
 	// Dans le controlleur on utilise des DTO

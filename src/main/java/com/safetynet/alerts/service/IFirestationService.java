@@ -1,7 +1,7 @@
 package com.safetynet.alerts.service;
 
 import java.util.List;
-import java.util.TreeMap;
+import java.util.SortedMap;
 
 import com.safetynet.alerts.dto.FirestationDTO;
 import com.safetynet.alerts.model.Person;
@@ -18,7 +18,7 @@ public interface IFirestationService {
 
 	public boolean deleteOneFirestation(FirestationDTO firestationDTO);
 
-	public TreeMap<String, Person> getPersonsFromFirestations(String stationNumber);
+	public SortedMap<String, Person> getPersonsWithBirthdatesFromFirestations(String stationNumber);
 
 	public FirestationDTO addFirestation(FirestationDTO firestationDTO);
 }

@@ -37,9 +37,9 @@ class Url7PersonServiceTest {
 	@BeforeEach
 	private void setUpPerTest() {
 		personRepo = new PersonRepository();
-		personRepo.save(new Person("toto", "tutu", "tutu", "titi", "tete", "tyty", "tata"));
-		personRepo.save(new Person("arnold", "lolo", "tutu", "Culver", "tete", "tyty", "tata"));
-		personRepo.save(new Person("willy", "lala", "tutu", "Lyon", "tete", "tyty", "tata"));
+		personRepo.save(new Person("Cary", "Grant", "tutu", "titi", "tete", "tyty", "tata"));
+		personRepo.save(new Person("James", "Stewart", "tutu", "Culver", "tete", "tyty", "tata"));
+		personRepo.save(new Person("Gary", "Cooper", "tutu", "Lyon", "tete", "tyty", "tata"));
 
 	}
 

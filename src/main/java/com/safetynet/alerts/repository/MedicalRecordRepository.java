@@ -1,7 +1,6 @@
 package com.safetynet.alerts.repository;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,27 +16,23 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 
 	private List<MedicalRecord> medicalrecords = new ArrayList<>();
 
-	@Override
 	public MedicalRecord save(MedicalRecord medicalrecord) {
-//		medicalrecords.add(medicalrecord);
-//		return medicalrecord;
 
-		Iterator<MedicalRecord> iteratorMedicalRecords = medicalrecords.iterator();
 		try {
 			boolean mrFound = false;
-			Integer numMedicalRecord = 0;
-			while (iteratorMedicalRecords.hasNext()) {
+			if (medicalrecord == null) {
+				mrFound = true;
+			} else {
 
-				if (medicalrecords.get(numMedicalRecord).getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
-						&& medicalrecords.get(numMedicalRecord).getLastName()
-								.equalsIgnoreCase(medicalrecord.getLastName())) {
+				for (MedicalRecord oneMedicalRecord : medicalrecords) {
 
-					mrFound = true;
-					break;
+					if (oneMedicalRecord.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
+							&& oneMedicalRecord.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
+
+						mrFound = true;
+						break;
+					}
 				}
-
-				numMedicalRecord++;
-				iteratorMedicalRecords.next();
 			}
 			if (!mrFound) {
 				medicalrecords.add(medicalrecord);
@@ -51,28 +46,20 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 		return null;
 	}
 
-	@Override
 	public List<MedicalRecord> findAllMedicalRecords() {
 		return medicalrecords;
 	}
 
-	@Override
 	public MedicalRecord readAMedicalRecord(String firstname, String lastname) {
 
-		Iterator<MedicalRecord> iteratorMedicalRecords = medicalrecords.iterator();
-
 		try {
-			Integer numMedicalRecord = 0;
-			while (iteratorMedicalRecords.hasNext()) {
+			for (MedicalRecord oneMedicalRecord : medicalrecords) {
 
-				if (medicalrecords.get(numMedicalRecord).getFirstName().equalsIgnoreCase(firstname)
-						&& medicalrecords.get(numMedicalRecord).getLastName().equalsIgnoreCase(lastname)) {
+				if (oneMedicalRecord.getFirstName().equalsIgnoreCase(firstname)
+						&& oneMedicalRecord.getLastName().equalsIgnoreCase(lastname)) {
 
-					return medicalrecords.get(numMedicalRecord);
+					return oneMedicalRecord;
 				}
-
-				numMedicalRecord++;
-				iteratorMedicalRecords.next();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -80,27 +67,20 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 		return null;
 	}
 
-	@Override
 	public MedicalRecord updateAMedicalRecord(MedicalRecord medicalrecord) {
-		Iterator<MedicalRecord> iteratorMedicalRecords = medicalrecords.iterator();
 
 		try {
-			Integer numMedicalRecord = 0;
-			while (iteratorMedicalRecords.hasNext()) {
+			for (MedicalRecord oneMedicalRecord : medicalrecords) {
 
-				if (medicalrecords.get(numMedicalRecord).getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
-						&& medicalrecords.get(numMedicalRecord).getLastName()
-								.equalsIgnoreCase(medicalrecord.getLastName())) {
+				if (oneMedicalRecord.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
+						&& oneMedicalRecord.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
 
-					medicalrecords.get(numMedicalRecord).setBirthDate(medicalrecord.getBirthDate());
-					medicalrecords.get(numMedicalRecord).setMedications(medicalrecord.getMedications());
-					medicalrecords.get(numMedicalRecord).setAllergies(medicalrecord.getAllergies());
+					oneMedicalRecord.setBirthDate(medicalrecord.getBirthDate());
+					oneMedicalRecord.setMedications(medicalrecord.getMedications());
+					oneMedicalRecord.setAllergies(medicalrecord.getAllergies());
 
-					return medicalrecords.get(numMedicalRecord);
+					return oneMedicalRecord;
 				}
-
-				numMedicalRecord++;
-				iteratorMedicalRecords.next();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -110,25 +90,17 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 
 	@Override
 	public boolean deleteAMedicalRecord(MedicalRecord medicalrecord) {
-		Iterator<MedicalRecord> iteratorMedicalRecords = medicalrecords.iterator();
+
 		boolean isRemoved = false;
 		try {
-			Integer numMedicalRecord = 0;
-			while (iteratorMedicalRecords.hasNext()) {
+			for (MedicalRecord oneMedicalRecord : medicalrecords) {
 
-				if (medicalrecords.get(numMedicalRecord).getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
-						&& medicalrecords.get(numMedicalRecord).getLastName()
-								.equalsIgnoreCase(medicalrecord.getLastName())) {
+				if (oneMedicalRecord.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
+						&& oneMedicalRecord.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
 
-					medicalrecords.remove(medicalrecords.get(numMedicalRecord));
-					isRemoved = true;
+					isRemoved = medicalrecords.remove(oneMedicalRecord);
 					break;
-
-				} else {
-					numMedicalRecord++;
-					iteratorMedicalRecords.next();
 				}
-
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
