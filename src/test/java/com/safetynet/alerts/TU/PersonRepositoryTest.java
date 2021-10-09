@@ -27,9 +27,6 @@ class PersonRepositoryTest {
 	// To be tested
 	private IPersonRepository personRepo;
 
-//	@Mock
-//	private IJacksonService js;
-
 	@BeforeEach
 	private void setUpPerTest() {
 		personRepo = new PersonRepository();

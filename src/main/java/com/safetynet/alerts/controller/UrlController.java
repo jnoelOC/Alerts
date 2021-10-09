@@ -33,7 +33,7 @@ public class UrlController {
 		if (sm == null) {
 			return new ResponseEntity<>(sm, HttpStatus.NOT_FOUND);
 		} else {
-			return new ResponseEntity<>(sm, HttpStatus.CREATED);
+			return new ResponseEntity<>(sm, HttpStatus.FOUND);
 		}
 	}
 

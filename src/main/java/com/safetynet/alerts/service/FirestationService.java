@@ -107,19 +107,9 @@ public class FirestationService implements IFirestationService {
 
 		SortedMap<String, Person> personsWithBirthDates = new TreeMap<>();
 		try {
-			// Retrieve list of stations with the stationNumber
-			List<FirestationDTO> listOfFirestationsDTO = getSeveralFirestations(stationNumber);
-			List<Firestation> listOfFirestations = new ArrayList<>();
-			for (FirestationDTO oneFirestationDTO : listOfFirestationsDTO) {
-				listOfFirestations.add(firestationMapper.toFirestation(oneFirestationDTO));
-			}
+			List<Firestation> listOfFirestations = retrieveStationsAssociatedWith(stationNumber);
 
-			// Retrieve list of all persons
-			List<PersonDTO> listOfPersonsDTO = personService.findAllPersons();
-			List<Person> listOfPersons = new ArrayList<>();
-			for (PersonDTO personDTO : listOfPersonsDTO) {
-				listOfPersons.add(personMapper.toPerson(personDTO));
-			}
+			List<Person> listOfPersons = retrieveAllPersons();
 
 			// Retrieve a list of persons by comparing address of persons with address of
 			// stations
@@ -134,12 +124,7 @@ public class FirestationService implements IFirestationService {
 				}
 			}
 
-			// Retrieve list of all medical records
-			List<MedicalRecordDTO> listOfMedRecDTO = medicalRecordService.getAllMedicalRecords();
-			List<MedicalRecord> listOfMedRec = new ArrayList<>();
-			for (MedicalRecordDTO oneMedRecDTO : listOfMedRecDTO) {
-				listOfMedRec.add(medicalrecordMapper.toMedicalRecord(oneMedRecDTO));
-			}
+			List<MedicalRecord> listOfMedRec = retrieveAllMedicalRecords();
 
 			// Retrieve a list of birth dates in medical records associated with persons
 			for (MedicalRecord oneMedRec : listOfMedRec) {
@@ -161,6 +146,37 @@ public class FirestationService implements IFirestationService {
 		}
 		return personsWithBirthDates;
 	}
+
+	private List<Firestation> retrieveStationsAssociatedWith(String stationNumber) {
+		// Retrieve list of stations with the stationNumber
+		List<FirestationDTO> listOfFirestationsDTO = getSeveralFirestations(stationNumber);
+		List<Firestation> listOfFirestations = new ArrayList<>();
+		for (FirestationDTO oneFirestationDTO : listOfFirestationsDTO) {
+			listOfFirestations.add(firestationMapper.toFirestation(oneFirestationDTO));
+		}
+		return listOfFirestations;
+	}
+
+	private List<Person> retrieveAllPersons() {
+		// Retrieve list of all persons
+		List<PersonDTO> listOfPersonsDTO = personService.findAllPersons();
+		List<Person> listOfPersons = new ArrayList<>();
+		for (PersonDTO personDTO : listOfPersonsDTO) {
+			listOfPersons.add(personMapper.toPerson(personDTO));
+		}
+		return listOfPersons;
+	}
+
+	private List<MedicalRecord> retrieveAllMedicalRecords() {
+		// Retrieve list of all medical records
+		List<MedicalRecordDTO> listOfMedRecDTO = medicalRecordService.getAllMedicalRecords();
+		List<MedicalRecord> listOfMedRec = new ArrayList<>();
+		for (MedicalRecordDTO oneMedRecDTO : listOfMedRecDTO) {
+			listOfMedRec.add(medicalrecordMapper.toMedicalRecord(oneMedRecDTO));
+		}
+		return listOfMedRec;
+	}
+
 	// Dans le controlleur on utilise des DTO
 	// Dans la couche service service on mapp les DTO du controlleur vers les
 	// entities du repository

@@ -23,11 +23,7 @@ import com.safetynet.alerts.repository.PersonRepository;
 @ExtendWith(MockitoExtension.class)
 class Url7PersonServiceTest {
 	// To be tested
-
 	private IPersonRepository personRepo;
-
-//	@Mock
-//	private static JacksonService js;
 
 	@BeforeAll
 	private static void setUp() {
