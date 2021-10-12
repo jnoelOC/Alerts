@@ -3,6 +3,7 @@ package com.safetynet.alerts.service;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -20,8 +21,10 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.IFirestationRepository;
 import com.safetynet.alerts.repository.IMedicalRecordRepository;
 import com.safetynet.alerts.repository.IPersonRepository;
+import com.safetynet.alerts.utils.CalculateAge;
 import com.safetynet.alerts.utils.FirestationMapper;
 import com.safetynet.alerts.utils.MedicalRecordMapper;
+import com.safetynet.alerts.utils.PersonInfo;
 import com.safetynet.alerts.utils.PersonMapper;
 
 @Service
@@ -98,14 +101,14 @@ public class FirestationService implements IFirestationService {
 		return firestationRepository.deleteAFirestation(firestation);
 	}
 
-	//////////////////////////////// A REVOIR COMPLETEMENT
 	//////////////////////////////// ////////////////////////////////////
 	// URL1 - List of persons (with nb of children and adults) covered
 	// by corresponding station
 
-	public SortedMap<String, Person> getPersonsWithBirthdatesFromFirestations(String stationNumber) {
+	public List<PersonInfo> getPersonsWithBirthdatesFromFirestations(String stationNumber) {
 
 		SortedMap<String, Person> personsWithBirthDates = new TreeMap<>();
+		List<PersonInfo> listOfPersonsWithNbAdultsAndNbChildren = null;
 		try {
 			List<Firestation> listOfFirestations = retrieveStationsAssociatedWith(stationNumber);
 
@@ -137,14 +140,39 @@ public class FirestationService implements IFirestationService {
 				}
 			}
 
-			// Calculate number of adults and number of children
+			// Calculate number of children
+			CalculateAge calculateAge = new CalculateAge();
+			Integer nbOfChildren = 0;
+			for (Map.Entry<String, Person> mapElement : personsWithBirthDates.entrySet()) {
+				String keyBirthdate = mapElement.getKey();
+				if (calculateAge.calculateAgeOfPerson(keyBirthdate) < 18) {
+					nbOfChildren += 1;
+				}
+			}
 
-			// only firstName, lastName, address, phone
+			Integer nbTotalOfPerson = personsWithBirthDates.size();
+			// Calculate number of adults
+			Integer nbOfAdults = nbTotalOfPerson - nbOfChildren;
+
+			// Retrieve persons in a list
+			List<Person> listOfPersonsCoveredByFirestation = new ArrayList<>();
+			for (Map.Entry<String, Person> mapElement : personsWithBirthDates.entrySet()) {
+				String keyBirthdate = mapElement.getKey();
+				listOfPersonsCoveredByFirestation.add(personsWithBirthDates.get(keyBirthdate));
+			}
+
+			// only firstName, lastName, address, phone and nbAdults and nbChildren
+			PersonInfo personInfo = new PersonInfo("", "", "", "", 0, 0);
+			listOfPersonsWithNbAdultsAndNbChildren = new ArrayList<>();
+			// Keep person info
+			listOfPersonsWithNbAdultsAndNbChildren = personInfo.setInfoUrl1(listOfPersonsCoveredByFirestation,
+					nbOfAdults, nbOfChildren);
+
 		} catch (Exception ex) {
-
 			logger.error(MessageFormat.format("Error : {0}.", ex.getMessage()));
 		}
-		return personsWithBirthDates;
+
+		return listOfPersonsWithNbAdultsAndNbChildren;
 	}
 
 	private List<Firestation> retrieveStationsAssociatedWith(String stationNumber) {

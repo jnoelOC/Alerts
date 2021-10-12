@@ -1,7 +1,7 @@
 package com.safetynet.alerts.controller;
 
+import java.text.MessageFormat;
 import java.util.List;
-import java.util.SortedMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.IFirestationService;
 import com.safetynet.alerts.service.IPersonService;
+import com.safetynet.alerts.utils.PersonInfo;
 
 @RestController
 public class UrlController {
@@ -28,12 +28,19 @@ public class UrlController {
 
 	// URL1 : List of persons covered by corresponding this station
 	@GetMapping("/firestation")
-	public ResponseEntity<SortedMap<String, Person>> findPersonsFromFirestation(@RequestParam String stationNumber) {
-		SortedMap<String, Person> sm = firestationService.getPersonsWithBirthdatesFromFirestations(stationNumber);
-		if (sm == null) {
-			return new ResponseEntity<>(sm, HttpStatus.NOT_FOUND);
+	public ResponseEntity<List<PersonInfo>> findPersonsFromFirestation(@RequestParam String stationNumber) {
+		List<PersonInfo> lpi = null;
+		try {
+			lpi = firestationService.getPersonsWithBirthdatesFromFirestations(stationNumber);
+
+		} catch (Exception ex) {
+
+			logger.error(MessageFormat.format("Error url1 : {0}.", ex.getMessage()));
+		}
+		if (lpi == null) {
+			return new ResponseEntity<>(lpi, HttpStatus.NOT_FOUND);
 		} else {
-			return new ResponseEntity<>(sm, HttpStatus.FOUND);
+			return new ResponseEntity<>(lpi, HttpStatus.FOUND);
 		}
 	}
 
