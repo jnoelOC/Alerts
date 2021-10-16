@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.service.IFirestationService;
+import com.safetynet.alerts.service.IPersonInfoService;
 import com.safetynet.alerts.service.IPersonService;
-import com.safetynet.alerts.utils.PersonInfo;
+import com.safetynet.alerts.service.PersonInfoService;
 
 @RestController
 public class UrlController {
@@ -22,25 +23,26 @@ public class UrlController {
 
 	@Autowired
 	IFirestationService firestationService;
-
 	@Autowired
 	IPersonService personService;
+	@Autowired
+	IPersonInfoService personInfoService;
 
-	// URL1 : List of persons covered by corresponding this station
+	// URL1 : List of persons covered by this corresponding station
 	@GetMapping("/firestation")
-	public ResponseEntity<List<PersonInfo>> findPersonsFromFirestation(@RequestParam String stationNumber) {
-		List<PersonInfo> lpi = null;
+	public ResponseEntity<PersonInfoService> findPersonsFromFirestation(@RequestParam String stationNumber) {
+		PersonInfoService pis = null;
 		try {
-			lpi = firestationService.getPersonsWithBirthdatesFromFirestations(stationNumber);
+			pis = firestationService.getPersonsWithBirthdatesFromFirestations(stationNumber);
 
 		} catch (Exception ex) {
 
 			logger.error(MessageFormat.format("Error url1 : {0}.", ex.getMessage()));
 		}
-		if (lpi == null) {
-			return new ResponseEntity<>(lpi, HttpStatus.NOT_FOUND);
+		if (pis == null) {
+			return new ResponseEntity<>(pis, HttpStatus.NOT_FOUND);
 		} else {
-			return new ResponseEntity<>(lpi, HttpStatus.FOUND);
+			return new ResponseEntity<>(pis, HttpStatus.FOUND);
 		}
 	}
 

@@ -18,13 +18,13 @@ import com.safetynet.alerts.dto.PersonDTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.model.PersonInfo;
 import com.safetynet.alerts.repository.IFirestationRepository;
 import com.safetynet.alerts.repository.IMedicalRecordRepository;
 import com.safetynet.alerts.repository.IPersonRepository;
 import com.safetynet.alerts.utils.CalculateAge;
 import com.safetynet.alerts.utils.FirestationMapper;
 import com.safetynet.alerts.utils.MedicalRecordMapper;
-import com.safetynet.alerts.utils.PersonInfo;
 import com.safetynet.alerts.utils.PersonMapper;
 
 @Service
@@ -42,6 +42,8 @@ public class FirestationService implements IFirestationService {
 	@Autowired
 	IPersonService personService;
 	@Autowired
+	IPersonInfoService personInfoService;
+	@Autowired
 	IMedicalRecordService medicalRecordService;
 
 	private FirestationMapper firestationMapper = new FirestationMapper();
@@ -49,7 +51,6 @@ public class FirestationService implements IFirestationService {
 	private MedicalRecordMapper medicalrecordMapper = new MedicalRecordMapper();
 
 	public List<FirestationDTO> getAllFirestations() {
-		// utiliser Service !?!?!
 		List<Firestation> listNotDto = firestationRepository.findAllFirestations();
 		List<FirestationDTO> listFirestationDto = new ArrayList<>();
 
@@ -105,10 +106,11 @@ public class FirestationService implements IFirestationService {
 	// URL1 - List of persons (with nb of children and adults) covered
 	// by corresponding station
 
-	public List<PersonInfo> getPersonsWithBirthdatesFromFirestations(String stationNumber) {
+	public PersonInfoService getPersonsWithBirthdatesFromFirestations(String stationNumber) {
 
 		SortedMap<String, Person> personsWithBirthDates = new TreeMap<>();
-		List<PersonInfo> listOfPersonsWithNbAdultsAndNbChildren = null;
+
+		PersonInfoService pis = new PersonInfoService();
 		try {
 			List<Firestation> listOfFirestations = retrieveStationsAssociatedWith(stationNumber);
 
@@ -154,25 +156,37 @@ public class FirestationService implements IFirestationService {
 			// Calculate number of adults
 			Integer nbOfAdults = nbTotalOfPerson - nbOfChildren;
 
-			// Retrieve persons in a list
+			// Retrieve persons in a list from sortedMap
 			List<Person> listOfPersonsCoveredByFirestation = new ArrayList<>();
 			for (Map.Entry<String, Person> mapElement : personsWithBirthDates.entrySet()) {
 				String keyBirthdate = mapElement.getKey();
 				listOfPersonsCoveredByFirestation.add(personsWithBirthDates.get(keyBirthdate));
 			}
 
-			// only firstName, lastName, address, phone and nbAdults and nbChildren
-			PersonInfo personInfo = new PersonInfo("", "", "", "", 0, 0);
-			listOfPersonsWithNbAdultsAndNbChildren = new ArrayList<>();
 			// Keep person info
-			listOfPersonsWithNbAdultsAndNbChildren = personInfo.setInfoUrl1(listOfPersonsCoveredByFirestation,
+			pis = personInfoService.setInfoUrl1(transformFromPersonToPersonInfo(listOfPersonsCoveredByFirestation),
 					nbOfAdults, nbOfChildren);
 
 		} catch (Exception ex) {
 			logger.error(MessageFormat.format("Error : {0}.", ex.getMessage()));
 		}
 
-		return listOfPersonsWithNbAdultsAndNbChildren;
+		return pis;
+	}
+
+	private List<PersonInfo> transformFromPersonToPersonInfo(List<Person> listOfPersonsCoveredByFirestation) {
+		// Transform from Person to PersonInfo : firstName, lastName, address, phone
+		List<PersonInfo> lpi = new ArrayList<>();
+
+		for (Person onePerson : listOfPersonsCoveredByFirestation) {
+			PersonInfo pi = new PersonInfo();
+			pi.setFirstName(onePerson.getFirstName());
+			pi.setLastName(onePerson.getLastName());
+			pi.setAddress(onePerson.getAddress());
+			pi.setPhone(onePerson.getPhone());
+			lpi.add(pi);
+		}
+		return lpi;
 	}
 
 	private List<Firestation> retrieveStationsAssociatedWith(String stationNumber) {

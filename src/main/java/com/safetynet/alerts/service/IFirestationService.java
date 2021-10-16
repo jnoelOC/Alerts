@@ -3,7 +3,6 @@ package com.safetynet.alerts.service;
 import java.util.List;
 
 import com.safetynet.alerts.dto.FirestationDTO;
-import com.safetynet.alerts.utils.PersonInfo;
 
 public interface IFirestationService {
 
@@ -17,7 +16,7 @@ public interface IFirestationService {
 
 	public boolean deleteOneFirestation(FirestationDTO firestationDTO);
 
-	public List<PersonInfo> getPersonsWithBirthdatesFromFirestations(String stationNumber);
+	public PersonInfoService getPersonsWithBirthdatesFromFirestations(String stationNumber);
 
 	public FirestationDTO addFirestation(FirestationDTO firestationDTO);
 }

@@ -17,11 +17,11 @@ public class CalculateAge {
 	public int calculateAgeOfPerson(String customBirthDate) {
 		int age = 0;
 
-		try {
-			// define a customized format
-			DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-			// transform to iso format
-			String isoBd = transformFomCustomToIsoFormat(customBirthDate);
+		// define a customized format
+		DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+		// transform to iso format
+		String isoBd = transformFomCustomToIsoFormat(customBirthDate);
+		if (isoBd != null) {
 			// transform from string to localDate at iso format
 			LocalDate birthdate = LocalDate.parse(isoBd);
 
@@ -32,10 +32,6 @@ public class CalculateAge {
 			// calculate the age
 			Period period = Period.between(birthdate, today);
 			age = period.getYears();
-		} catch (NullPointerException exnull) {
-			logger.error("Pointer at null : %s %n", exnull.getMessage());
-		} catch (Exception ex) {
-			logger.error("Error ! %s %n", ex.getMessage());
 		}
 		return age;
 	}
