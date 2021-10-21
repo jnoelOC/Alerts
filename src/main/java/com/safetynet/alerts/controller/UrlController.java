@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.safetynet.alerts.dto.ChildrenInfoDTO;
 import com.safetynet.alerts.service.IFirestationService;
 import com.safetynet.alerts.service.IPersonInfoService;
 import com.safetynet.alerts.service.IPersonService;
@@ -43,6 +44,20 @@ public class UrlController {
 			return new ResponseEntity<>(pis, HttpStatus.NOT_FOUND);
 		} else {
 			return new ResponseEntity<>(pis, HttpStatus.FOUND);
+		}
+	}
+
+	// URL2 : List of children living at this address
+	@GetMapping("/childAlert")
+	public ResponseEntity<ChildrenInfoDTO> findChildrenFromAddress(@RequestParam String address) {
+		ChildrenInfoDTO cid = null;
+
+		cid = personService.getChildrenFrom(address);
+
+		if (cid == null) {
+			return new ResponseEntity<>(cid, HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(cid, HttpStatus.FOUND);
 		}
 	}
 

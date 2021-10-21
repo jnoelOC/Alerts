@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -108,9 +107,9 @@ public class FirestationService implements IFirestationService {
 
 	public PersonInfoService getPersonsWithBirthdatesFromFirestations(String stationNumber) {
 
-		SortedMap<String, Person> personsWithBirthDates = new TreeMap<>();
-
 		PersonInfoService pis = new PersonInfoService();
+		TreeMap<String, Person> personsWithBirthDates = new TreeMap<>();
+
 		try {
 			List<Firestation> listOfFirestations = retrieveStationsAssociatedWith(stationNumber);
 
@@ -121,9 +120,7 @@ public class FirestationService implements IFirestationService {
 			List<Person> listOfPersonsWithSameAddressOfStation = new ArrayList<>();
 			for (Firestation oneFirestation : listOfFirestations) {
 				for (Person onePerson : listOfPersons) {
-
 					if (onePerson.getAddress().equalsIgnoreCase(oneFirestation.getAddress())) {
-
 						listOfPersonsWithSameAddressOfStation.add(onePerson);
 					}
 				}
@@ -136,7 +133,6 @@ public class FirestationService implements IFirestationService {
 				for (Person onePerson : listOfPersonsWithSameAddressOfStation) {
 					if (oneMedRec.getFirstName().equalsIgnoreCase(onePerson.getFirstName())
 							&& oneMedRec.getLastName().equalsIgnoreCase(onePerson.getLastName())) {
-
 						personsWithBirthDates.put(oneMedRec.getBirthDate(), onePerson);
 					}
 				}
@@ -175,7 +171,7 @@ public class FirestationService implements IFirestationService {
 	}
 
 	private List<PersonInfo> transformFromPersonToPersonInfo(List<Person> listOfPersonsCoveredByFirestation) {
-		// Transform from Person to PersonInfo : firstName, lastName, address, phone
+		// Transform from Person to PersonInfo :firstName, lastName, address, phone
 		List<PersonInfo> lpi = new ArrayList<>();
 
 		for (Person onePerson : listOfPersonsCoveredByFirestation) {
@@ -189,8 +185,8 @@ public class FirestationService implements IFirestationService {
 		return lpi;
 	}
 
-	private List<Firestation> retrieveStationsAssociatedWith(String stationNumber) {
-		// Retrieve list of stations with the stationNumber
+	private List<Firestation> retrieveStationsAssociatedWith(String stationNumber) { // Retrieve list of stations with
+																						// the stationNumber
 		List<FirestationDTO> listOfFirestationsDTO = getSeveralFirestations(stationNumber);
 		List<Firestation> listOfFirestations = new ArrayList<>();
 		for (FirestationDTO oneFirestationDTO : listOfFirestationsDTO) {
@@ -199,7 +195,7 @@ public class FirestationService implements IFirestationService {
 		return listOfFirestations;
 	}
 
-	private List<Person> retrieveAllPersons() {
+	public List<Person> retrieveAllPersons() {
 		// Retrieve list of all persons
 		List<PersonDTO> listOfPersonsDTO = personService.findAllPersons();
 		List<Person> listOfPersons = new ArrayList<>();
@@ -209,7 +205,7 @@ public class FirestationService implements IFirestationService {
 		return listOfPersons;
 	}
 
-	private List<MedicalRecord> retrieveAllMedicalRecords() {
+	public List<MedicalRecord> retrieveAllMedicalRecords() {
 		// Retrieve list of all medical records
 		List<MedicalRecordDTO> listOfMedRecDTO = medicalRecordService.getAllMedicalRecords();
 		List<MedicalRecord> listOfMedRec = new ArrayList<>();
@@ -219,9 +215,4 @@ public class FirestationService implements IFirestationService {
 		return listOfMedRec;
 	}
 
-	// Dans le controlleur on utilise des DTO
-	// Dans la couche service service on mapp les DTO du controlleur vers les
-	// entities du repository
-	// Dans service on mapp les entities du repository vers les DTO du controlleur
-	// Dans repository on utilise des entities
 }
