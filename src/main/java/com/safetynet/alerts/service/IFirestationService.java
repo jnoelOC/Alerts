@@ -16,7 +16,5 @@ public interface IFirestationService {
 
 	public boolean deleteOneFirestation(FirestationDTO firestationDTO);
 
-	public PersonInfoService getPersonsWithBirthdatesFromFirestations(String stationNumber);
-
 	public FirestationDTO addFirestation(FirestationDTO firestationDTO);
 }

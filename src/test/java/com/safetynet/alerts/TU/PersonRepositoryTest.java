@@ -59,7 +59,8 @@ class PersonRepositoryTest {
 	void SavePersonTest_ShouldReturnPerson(Person person) {
 		// arrange
 		personRepo = new PersonRepository(); // this line to reinitialize personRepo
-		Person p = personRepo.save(person);
+
+		personRepo.save(person);
 		// act
 		List<Person> lp = personRepo.findAllPersons();
 		// assert
