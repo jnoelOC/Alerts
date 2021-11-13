@@ -1,4 +1,4 @@
-package com.safetynet.alerts.TU;
+package com.safetynet.alerts.TU.Repo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

@@ -15,4 +15,6 @@ public interface IPersonService {
 	public PersonDTO updateOnePerson(PersonDTO personDTO);
 
 	public boolean deleteOnePerson(PersonDTO personDTO);
+
+	public List<String> getAllEmailsFrom(String city);
 }

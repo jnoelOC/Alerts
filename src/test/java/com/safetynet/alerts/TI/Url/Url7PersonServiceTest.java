@@ -1,7 +1,7 @@
-package com.safetynet.alerts.TU;
+package com.safetynet.alerts.TI.Url;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +14,25 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.IPersonRepository;
-import com.safetynet.alerts.repository.PersonRepository;
+import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.service.UrlService;
 
 @ExtendWith(MockitoExtension.class)
 class Url7PersonServiceTest {
 	// To be tested
-	private IPersonRepository personRepo;
+	@InjectMocks
+	private UrlService us = new UrlService();
+
+	@Mock
+	private PersonService personService;
+
+//	@Mock
+//	private PersonRepository personRepository;
 
 	@BeforeAll
 	private static void setUp() {
@@ -32,11 +41,12 @@ class Url7PersonServiceTest {
 
 	@BeforeEach
 	private void setUpPerTest() {
-		personRepo = new PersonRepository();
-		personRepo.save(new Person("Cary", "Grant", "tutu", "titi", "tete", "tyty", "tata"));
-		personRepo.save(new Person("James", "Stewart", "tutu", "Culver", "tete", "tyty", "tata"));
-		personRepo.save(new Person("Gary", "Cooper", "tutu", "Lyon", "tete", "tyty", "tata"));
-
+		List<String> listOfAllMails = new ArrayList<>();
+		listOfAllMails.add("jo@gmail.com");
+		listOfAllMails.add("ro@gmail.com");
+		listOfAllMails.add("tenley@gmail.com");
+		listOfAllMails.add("allison@gmail.com");
+		when(personService.getAllEmailsFrom(Mockito.any())).thenReturn(listOfAllMails);
 	}
 
 	// URL7
@@ -51,7 +61,7 @@ class Url7PersonServiceTest {
 		List<String> ls = new ArrayList<>();
 
 		// act
-		ls = personRepo.getEmailsFrom(city);
+		ls = us.getAllEmailsFrom(city);
 		// assert
 		assertNotNull(ls, "list of Emails not null");
 	}
@@ -66,23 +76,23 @@ class Url7PersonServiceTest {
 	/**
 	 * This method checks getting emails of all Persons from a city
 	 */
-	@ParameterizedTest
-	@MethodSource("CityNullSource")
-	@DisplayName("Get none email of persons from city == null")
-	void GetEmailsOfPersonsFromNullCityTest_ShouldReturnNull(String city) {
-		// arrange
-		List<String> ls = new ArrayList<>();
-
-		// act
-		ls = personRepo.getEmailsFrom(city);
-		// assert
-		assertThat(ls).isNullOrEmpty();
-	}
-
-	// with its data
-	private static Stream<Arguments> CityNullSource() {
-		String city1 = "";
-		String city3 = null;
-		return Stream.of(Arguments.of(city1), null, Arguments.of(city3));
-	}
+//	@ParameterizedTest
+//	@MethodSource("CityNullSource")
+//	@DisplayName("Get none email of persons from city == null")
+//	void GetEmailsOfPersonsFromNullCityTest_ShouldReturnNull(String city) {
+//		// arrange
+//		List<String> ls = new ArrayList<>();
+//
+//		// act
+//		ls = us.getAllEmailsFrom(city);
+//		// assert
+//		assertThat(ls).isNullOrEmpty();
+//	}
+//
+//	// with its data
+//	private static Stream<Arguments> CityNullSource() {
+//		String city1 = "";
+//		String city3 = null;
+//		return Stream.of(Arguments.of(city1), null, Arguments.of(city3));
+//	}
 }

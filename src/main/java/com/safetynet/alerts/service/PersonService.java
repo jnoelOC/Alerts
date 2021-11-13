@@ -1,6 +1,7 @@
 package com.safetynet.alerts.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -66,4 +67,11 @@ public class PersonService implements IPersonService {
 		return personRepository.deleteAPerson(person);
 	}
 
+	public List<String> getAllEmailsFrom(String city) {
+		if (city.isBlank()) {
+			return Collections.emptyList();
+		} else {
+			return personRepository.getEmailsFrom(city);
+		}
+	}
 }

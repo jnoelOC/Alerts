@@ -34,8 +34,10 @@ public class UrlController {
 		psid = us.getPersonsWithBirthdatesFromFirestations(stationNumber);
 
 		if (psid == null) {
+			logger.error("Erreur dans Url1 : status Non trouvé.");
 			return new ResponseEntity<>(psid, HttpStatus.NOT_FOUND);
 		} else {
+			logger.info("Url1 : Liste de personnes trouvées.");
 			return new ResponseEntity<>(psid, HttpStatus.FOUND);
 		}
 	}
@@ -48,8 +50,10 @@ public class UrlController {
 		cid = us.getChildrenFrom(address);
 
 		if (cid == null) {
+			logger.error("Erreur dans Url2 : status Non trouvé.");
 			return new ResponseEntity<>(cid, HttpStatus.NOT_FOUND);
 		} else {
+			logger.info("Url2 : Liste de enfants trouvés.");
 			return new ResponseEntity<>(cid, HttpStatus.FOUND);
 		}
 	}
@@ -62,8 +66,10 @@ public class UrlController {
 		listOfPhones = us.getPhonesFromFirestations(stationNumber);
 
 		if (listOfPhones == null) {
+			logger.error("Erreur dans Url3 : status Non trouvé.");
 			return new ResponseEntity<>(listOfPhones, HttpStatus.NOT_FOUND);
 		} else {
+			logger.info("Url3 : Liste de téléphones trouvés.");
 			return new ResponseEntity<>(listOfPhones, HttpStatus.FOUND);
 		}
 	}
@@ -77,8 +83,10 @@ public class UrlController {
 		listOfPersons = us.getPersonsWithFirestationsFrom(address);
 
 		if (listOfPersons == null) {
+			logger.error("Erreur dans Url4 : status Non trouvé.");
 			return new ResponseEntity<>(listOfPersons, HttpStatus.NOT_FOUND);
 		} else {
+			logger.info("Url4 : Liste de personnes trouvées.");
 			return new ResponseEntity<>(listOfPersons, HttpStatus.FOUND);
 		}
 	}
@@ -91,10 +99,10 @@ public class UrlController {
 		lp5 = us.getFamilyWith(stations);
 
 		if (lp5 == null) {
-			// logg error
+			logger.error("Erreur dans Url5 : status Non trouvé.");
 			return new ResponseEntity<>(lp5, HttpStatus.NOT_FOUND);
 		} else {
-			// logg info
+			logger.info("Url5 : Liste de personnes trouvées.");
 			return new ResponseEntity<>(lp5, HttpStatus.FOUND);
 		}
 	}
@@ -108,6 +116,7 @@ public class UrlController {
 		lp6 = us.getPersonWith(firstName, lastName);
 
 		if (lp6 == null) {
+			logger.error("Erreur dans Url6 : status Non trouvé.");
 			return new ResponseEntity<>(lp6, HttpStatus.NOT_FOUND);
 		} else {
 			return new ResponseEntity<>(lp6, HttpStatus.FOUND);

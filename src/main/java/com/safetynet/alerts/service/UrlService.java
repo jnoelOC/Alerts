@@ -26,6 +26,7 @@ import com.safetynet.alerts.dto.PersonsUrl4DTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.repository.IFirestationRepository;
 import com.safetynet.alerts.repository.IMedicalRecordRepository;
 import com.safetynet.alerts.repository.IPersonRepository;
 import com.safetynet.alerts.utils.CalculateAge;
@@ -45,6 +46,8 @@ public class UrlService {
 	@Autowired
 	IPersonRepository personRepository;
 	@Autowired
+	IFirestationRepository firestationRepository;
+	@Autowired
 	IMedicalRecordRepository medicalRecordRepository;
 
 	PersonMapper personMapper = new PersonMapper();
@@ -55,9 +58,13 @@ public class UrlService {
 
 	public List<MedicalRecordDTO> findAllMedicalRecord() {
 		List<MedicalRecordDTO> listOfAllMedRecDTO = new ArrayList<>();
-		for (MedicalRecord oneMedRec : medicalRecordRepository.findAllMedicalRecords()) {
-			listOfAllMedRecDTO.add(medicalRecordMapper.toMedicalRecordDTO(oneMedRec));
+//		for (MedicalRecord oneMedRec : medicalRecordRepository.findAllMedicalRecords()) {
+//			listOfAllMedRecDTO.add(medicalRecordMapper.toMedicalRecordDTO(oneMedRec));
+//		}
+		for (MedicalRecordDTO oneMedRecDTO : medicalRecordService.getAllMedicalRecords()) {
+			listOfAllMedRecDTO.add(oneMedRecDTO);
 		}
+
 		return listOfAllMedRecDTO;
 	}
 
@@ -66,8 +73,13 @@ public class UrlService {
 		List<PersonDTO> listOfPersonsDTOinput = new ArrayList<>();
 		List<PersonDTO> listOfPersonsDTOoutput = new ArrayList<>();
 
-		for (Person onePerson : personRepository.findAllPersons()) {
-			listOfPersonsDTOinput.add(personMapper.toPersonDTO(onePerson));
+//		listOfPersonsDTOinput = personService.findAllPersons().stream()
+//				.filter(person -> person.getAddress().equalsIgnoreCase(address))
+//				.map(person -> personMapper.toPersonDTO(person))
+//				.collect(Collectors.toList());
+
+		for (PersonDTO onePersonDTO : personService.findAllPersons()) {
+			listOfPersonsDTOinput.add(onePersonDTO);
 		}
 
 		for (PersonDTO personDTO : listOfPersonsDTOinput) {
@@ -77,6 +89,8 @@ public class UrlService {
 			}
 		}
 		return listOfPersonsDTOoutput;
+
+//		return listOfPersonsDTOinput;
 	}
 
 	// Retrieve a list of persons by comparing address of persons with address of
@@ -241,12 +255,12 @@ public class UrlService {
 		List<Person> listOfPersonsWithSameAddressOfStation = retrievePersonsWithSameStationAddress(listOfFirestations,
 				listOfPersons);
 
-		Set<String> listOfPhones = new HashSet<>();
+		Set<String> setOfPhones = new HashSet<>();
 		for (Person onePerson : listOfPersonsWithSameAddressOfStation) {
-			listOfPhones.add(onePerson.getPhone());
+			setOfPhones.add(onePerson.getPhone());
 		}
 
-		return listOfPhones;
+		return setOfPhones;
 	}
 
 	///////////////////////////////////////////////////////////////////////
@@ -260,6 +274,12 @@ public class UrlService {
 		List<PersonDTO> lpDto = retrieveAllPersonsFrom(address);
 		List<FirestationDTO> lfDto = firestationService.getAllFirestations();
 		Integer age = 0;
+
+		if (lpDto.isEmpty()) {
+			listOfPersons4DTO.setListOfPersons(null);
+			listOfPersons4DTO.setNumberOfFirestation(null);
+			return listOfPersons4DTO;
+		}
 
 		// Fill one object of type PersonUrl4DTO by infos
 		for (FirestationDTO fDto : lfDto) {
@@ -327,8 +347,8 @@ public class UrlService {
 		}
 
 		// Add adults in each ChildInfo object
-		for (ChildInfoDTO cid1 : listOfChildInfoDTO) {
-			cid1.setListOfAdultsAtHome(retrieveAListOfPersonsFrom(listOfAdultsNames));
+		for (ChildInfoDTO cidDto : listOfChildInfoDTO) {
+			cidDto.setListOfAdultsAtHome(retrieveAListOfPersonsFrom(listOfAdultsNames));
 		}
 
 		cid.setListOfChildren(listOfChildInfoDTO);
@@ -373,8 +393,7 @@ public class UrlService {
 		List<String> listOfAddresses = new ArrayList<>();
 		Integer age = 0;
 
-		List<FirestationDTO> listOfAllF = new ArrayList<>();
-		listOfAllF = firestationService.getAllFirestations();
+		List<FirestationDTO> listOfAllF = firestationService.getAllFirestations();
 
 		// list of address with list of firestation number
 		for (String numb : listOfFirestationNb) {
@@ -409,23 +428,12 @@ public class UrlService {
 		return lp5;
 	}
 
-	// list of persons with same family's name
-	private List<PersonDTO> getPersonWithSameFamily(String lastName) {
-		List<PersonDTO> lpDto = new ArrayList<>();
-		for (PersonDTO onePersDto : personService.findAllPersons()) {
-			if (onePersDto.getLastName().equalsIgnoreCase(lastName)) {
-				lpDto.add(onePersDto);
-			}
-		}
-		return lpDto;
-	}
-
 	// URL6
 	// List of lastname, address, age, mail and medical record from each person
 	public List<PersonUrl6DTO> getPersonWith(String firstName, String lastName) {
 
 		List<PersonUrl6DTO> lp6 = new ArrayList<>();
-		List<PersonDTO> lpDto = new ArrayList<>();
+		List<PersonDTO> lpDto;
 
 		lpDto = getPersonWithSameFamily(lastName);
 
@@ -447,12 +455,23 @@ public class UrlService {
 		return lp6;
 	}
 
+	// list of persons with same family's name
+	private List<PersonDTO> getPersonWithSameFamily(String lastName) {
+		List<PersonDTO> lpDto = new ArrayList<>();
+		for (PersonDTO onePersDto : personService.findAllPersons()) {
+			if (onePersDto.getLastName().equalsIgnoreCase(lastName)) {
+				lpDto.add(onePersDto);
+			}
+		}
+		return lpDto;
+	}
+
 	// URL7
 	// list mails of each person from this city
 	public List<String> getAllEmailsFrom(String city) {
 		List<String> ls = null;
 
-		ls = this.personRepository.getEmailsFrom(city);
+		ls = personService.getAllEmailsFrom(city);
 		return ls;
 	}
 

@@ -87,7 +87,6 @@ public class PersonRepository implements IPersonRepository {
 		return isRemoved;
 	}
 
-	// URL7
 	public List<String> getEmailsFrom(String city) {
 		List<String> ls = new ArrayList<>();
 
@@ -102,7 +101,5 @@ public class PersonRepository implements IPersonRepository {
 			}
 			return ls;
 		}
-
 	}
-
 }
