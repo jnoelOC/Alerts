@@ -2,11 +2,11 @@ package com.safetynet.alerts.service;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,16 +26,13 @@ import com.safetynet.alerts.dto.PersonsUrl4DTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.IFirestationRepository;
-import com.safetynet.alerts.repository.IMedicalRecordRepository;
-import com.safetynet.alerts.repository.IPersonRepository;
 import com.safetynet.alerts.utils.CalculateAge;
 import com.safetynet.alerts.utils.FirestationMapper;
 import com.safetynet.alerts.utils.MedicalRecordMapper;
 import com.safetynet.alerts.utils.PersonMapper;
 
 @Service
-public class UrlService {
+public class UrlService implements IUrlService {
 
 	@Autowired
 	IPersonService personService;
@@ -43,12 +40,6 @@ public class UrlService {
 	IFirestationService firestationService;
 	@Autowired
 	IMedicalRecordService medicalRecordService;
-	@Autowired
-	IPersonRepository personRepository;
-	@Autowired
-	IFirestationRepository firestationRepository;
-	@Autowired
-	IMedicalRecordRepository medicalRecordRepository;
 
 	PersonMapper personMapper = new PersonMapper();
 	FirestationMapper firestationMapper = new FirestationMapper();
@@ -56,45 +47,38 @@ public class UrlService {
 
 	public static final Logger logger = LogManager.getLogger(UrlService.class);
 
+	/*
+	 * Find all medical records
+	 * 
+	 * @return List<MedicalRecordDTO>
+	 * 
+	 */
 	public List<MedicalRecordDTO> findAllMedicalRecord() {
-		List<MedicalRecordDTO> listOfAllMedRecDTO = new ArrayList<>();
-//		for (MedicalRecord oneMedRec : medicalRecordRepository.findAllMedicalRecords()) {
-//			listOfAllMedRecDTO.add(medicalRecordMapper.toMedicalRecordDTO(oneMedRec));
-//		}
-		for (MedicalRecordDTO oneMedRecDTO : medicalRecordService.getAllMedicalRecords()) {
-			listOfAllMedRecDTO.add(oneMedRecDTO);
-		}
-
-		return listOfAllMedRecDTO;
+		return medicalRecordService.getAllMedicalRecords().stream().collect(Collectors.toList());
 	}
 
+	/*
+	 * Retrieve all persons associated with an address
+	 * 
+	 * @param String address
+	 * 
+	 * @return List<PersonDTO>
+	 * 
+	 */
 	public List<PersonDTO> retrieveAllPersonsFrom(String address) {
-		// Retrieve list of all persons from address
-		List<PersonDTO> listOfPersonsDTOinput = new ArrayList<>();
-		List<PersonDTO> listOfPersonsDTOoutput = new ArrayList<>();
-
-//		listOfPersonsDTOinput = personService.findAllPersons().stream()
-//				.filter(person -> person.getAddress().equalsIgnoreCase(address))
-//				.map(person -> personMapper.toPersonDTO(person))
-//				.collect(Collectors.toList());
-
-		for (PersonDTO onePersonDTO : personService.findAllPersons()) {
-			listOfPersonsDTOinput.add(onePersonDTO);
-		}
-
-		for (PersonDTO personDTO : listOfPersonsDTOinput) {
-			if (personDTO.getAddress().equalsIgnoreCase(address)) {
-
-				listOfPersonsDTOoutput.add(personDTO);
-			}
-		}
-		return listOfPersonsDTOoutput;
-
-//		return listOfPersonsDTOinput;
+		return personService.findAllPersons().stream().filter(person -> person.getAddress().equalsIgnoreCase(address))
+				.collect(Collectors.toList());
 	}
 
-	// Retrieve a list of persons by comparing address of persons with address of
-	// stations
+	/*
+	 * Retrieve a list of persons by comparing address of persons with address of
+	 * stations
+	 * 
+	 * @param List<Firestation> listOfFirestations and List<Person> listOfPersons
+	 * 
+	 * @return List<Person>
+	 * 
+	 */
 	public List<Person> retrievePersonsWithSameStationAddress(List<Firestation> listOfFirestations,
 			List<Person> listOfPersons) {
 		List<Person> listOfPersonsWithSameAddressOfStation = new ArrayList<>();
@@ -108,6 +92,14 @@ public class UrlService {
 		return listOfPersonsWithSameAddressOfStation;
 	}
 
+	/*
+	 * Calculate age of a person with its firstname and lastname
+	 * 
+	 * @param String firstName and String lastName
+	 * 
+	 * @return Integer age
+	 * 
+	 */
 	public Integer computeAge(String firstName, String lastName) {
 		Integer age = 0;
 		CalculateAge ca = new CalculateAge();
@@ -123,6 +115,14 @@ public class UrlService {
 		return age;
 	}
 
+	/*
+	 * Fill medical record DTO with data
+	 * 
+	 * @param MedicalRecordDTO medRecDTO and String firstName and String lastName
+	 * 
+	 * @return MedicalRecordDTO object
+	 * 
+	 */
 	public MedicalRecordDTO fillMedicalRecordDTO(MedicalRecordDTO medRecDTO, String firstName, String lastName) {
 
 		for (MedicalRecordDTO mrDTO : findAllMedicalRecord()) {
@@ -140,10 +140,15 @@ public class UrlService {
 		return medRecDTO;
 	}
 
-	//////////////////////////////// ////////////////////////////////////
-	// URL1 - List of persons (with nb of children and adults) covered
-	// by corresponding station
-
+	/*
+	 * URL1 List of persons (with nb of children and adults) covered by
+	 * corresponding station
+	 * 
+	 * @param String stationNumber
+	 * 
+	 * @return PersonsInfoDTO object
+	 * 
+	 */
 	public PersonsInfoDTO getPersonsWithBirthdatesFromFirestations(String stationNumber) {
 
 		PersonsInfoDTO psid = new PersonsInfoDTO();
@@ -153,10 +158,8 @@ public class UrlService {
 			List<Firestation> listOfFirestations = retrieveStationsAssociatedWith(stationNumber);
 
 			// Find all persons
-			List<Person> listOfPersons = new ArrayList<>();
-			for (PersonDTO onePersonDTO : personService.findAllPersons()) {
-				listOfPersons.add(personMapper.toPerson(onePersonDTO));
-			}
+			List<Person> listOfPersons = personService.findAllPersons().stream()
+					.map(onePersonDTO -> personMapper.toPerson(onePersonDTO)).collect(Collectors.toList());
 
 			// Retrieve a list of persons by comparing address of persons with address of
 			// stations
@@ -164,10 +167,9 @@ public class UrlService {
 					listOfFirestations, listOfPersons);
 
 			// Find all medical records
-			List<MedicalRecord> listOfMedRec = new ArrayList<>();
-			for (MedicalRecordDTO oneMedRecDTO : medicalRecordService.getAllMedicalRecords()) {
-				listOfMedRec.add(medicalRecordMapper.toMedicalRecord(oneMedRecDTO));
-			}
+			List<MedicalRecord> listOfMedRec = medicalRecordService.getAllMedicalRecords().stream()
+					.map(oneMedRecDTO -> medicalRecordMapper.toMedicalRecord(oneMedRecDTO))
+					.collect(Collectors.toList());
 
 			// Retrieve a list of birth dates in medical records associated with persons
 			for (MedicalRecord oneMedRec : listOfMedRec) {
@@ -214,58 +216,73 @@ public class UrlService {
 		return psid;
 	}
 
+	/*
+	 * Transform from a person to personInfoDTO
+	 * 
+	 * @param List<Person> listOfPersonsCoveredByFirestation
+	 * 
+	 * @return List<PersonInfoDTO>
+	 * 
+	 */
 	private List<PersonInfoDTO> transformFromPersonToPersonInfoDTO(List<Person> listOfPersonsCoveredByFirestation) {
 		// Transform from Person to PersonInfoDTO :firstName, lastName, address, phone
-		List<PersonInfoDTO> lpid = new ArrayList<>();
-
-		for (Person onePerson : listOfPersonsCoveredByFirestation) {
+		return listOfPersonsCoveredByFirestation.stream().map(onePerson -> {
 			PersonInfoDTO pi = new PersonInfoDTO();
 			pi.setFirstName(onePerson.getFirstName());
 			pi.setLastName(onePerson.getLastName());
 			pi.setAddress(onePerson.getAddress());
 			pi.setPhone(onePerson.getPhone());
-			lpid.add(pi);
-		}
-		return lpid;
+			return pi;
+		}).collect(Collectors.toList());
+
 	}
 
+	/*
+	 * Retrieve a station from a stationNumber
+	 * 
+	 * @param String stationNumber
+	 * 
+	 * @return List<Firestation>
+	 * 
+	 */
 	private List<Firestation> retrieveStationsAssociatedWith(String stationNumber) {
-
-		List<FirestationDTO> listOfFirestationsDTO = firestationService.getSeveralFirestations(stationNumber);
-		List<Firestation> listOfFirestations = new ArrayList<>();
-		for (FirestationDTO oneFirestationDTO : listOfFirestationsDTO) {
-			listOfFirestations.add(firestationMapper.toFirestation(oneFirestationDTO));
-		}
-		return listOfFirestations;
+		return firestationService.getSeveralFirestations(stationNumber).stream()
+				.map(oneFirestationDTO -> firestationMapper.toFirestation(oneFirestationDTO))
+				.collect(Collectors.toList());
 	}
 
-	///////////////////////////////////////////////////////////////////////
-	// URL3
-	// List of phones from residents associated with this corresponding station
+	/*
+	 * URL3 get List of phones from residents associated with this corresponding
+	 * station
+	 * 
+	 * @param String stationNumber
+	 * 
+	 * @return Set<String>
+	 * 
+	 */
 	public Set<String> getPhonesFromFirestations(String stationNumber) {
 
 		List<Firestation> listOfFirestations = retrieveStationsAssociatedWith(stationNumber);
 
 		// Find all persons
-		List<Person> listOfPersons = new ArrayList<>();
-		for (PersonDTO onePersonDTO : personService.findAllPersons()) {
-			listOfPersons.add(personMapper.toPerson(onePersonDTO));
-		}
+		List<Person> listOfPersons = personService.findAllPersons().stream()
+				.map(onePersonDTO -> personMapper.toPerson(onePersonDTO)).collect(Collectors.toList());
 
 		List<Person> listOfPersonsWithSameAddressOfStation = retrievePersonsWithSameStationAddress(listOfFirestations,
 				listOfPersons);
 
-		Set<String> setOfPhones = new HashSet<>();
-		for (Person onePerson : listOfPersonsWithSameAddressOfStation) {
-			setOfPhones.add(onePerson.getPhone());
-		}
-
-		return setOfPhones;
+		return listOfPersonsWithSameAddressOfStation.stream().map(onePerson -> onePerson.getPhone())
+				.collect(Collectors.toSet());
 	}
 
-	///////////////////////////////////////////////////////////////////////
-	// URL4
-	// List of persons living in address associated with this station address
+	/*
+	 * URL4 List of persons living in address associated with this station address
+	 * 
+	 * @param String address
+	 * 
+	 * @return PersonsUrl4DTO object
+	 * 
+	 */
 	public PersonsUrl4DTO getPersonsWithFirestationsFrom(String address) {
 
 		PersonsUrl4DTO listOfPersons4DTO = new PersonsUrl4DTO();
@@ -306,7 +323,13 @@ public class UrlService {
 		return listOfPersons4DTO;
 	}
 
-	// URL2 - List of children living at this address with adults
+	/*
+	 * URL2 List of children living at this address with adults
+	 * 
+	 * @param String address
+	 * 
+	 * @return ChildrenInfoDTO object
+	 */
 	public ChildrenInfoDTO getChildrenFrom(String address) {
 		ChildrenInfoDTO cid = new ChildrenInfoDTO();
 
@@ -356,11 +379,18 @@ public class UrlService {
 		return cid;
 	}
 
+	/*
+	 * Retrieve a list of persons from a TreeMap listOfPersons
+	 * 
+	 * @param TreeMap<String, String> listOfPersons
+	 * 
+	 * @return List<Person>
+	 * 
+	 */
 	public List<Person> retrieveAListOfPersonsFrom(TreeMap<String, String> listOfPersons) {
 		List<Person> listOfAdults = new ArrayList<>();
 
 		for (Map.Entry<String, String> entry : listOfPersons.entrySet()) {
-
 			Person person = null;
 			person = personMapper.toPerson(personService.getOnePerson(entry.getKey(), entry.getValue()));
 			listOfAdults.add(person);
@@ -368,7 +398,16 @@ public class UrlService {
 		return listOfAdults;
 	}
 
+	/*
+	 * Retrieve a medical record from firstname and lastname
+	 * 
+	 * @param String firstName, String lastName
+	 * 
+	 * @return MedicalRecord object
+	 * 
+	 */
 	public MedicalRecord retrieveMedRec(String firstName, String lastName) {
+
 		// Retrieve list of medical records
 		List<MedicalRecordDTO> listOfMedRecDTO = findAllMedicalRecord();
 
@@ -382,9 +421,15 @@ public class UrlService {
 		return null;
 	}
 
-	// URL5
-	// List of lastname, phone, age and medical record from each person with
-	// same family's name gathered by address
+	/*
+	 * URL5 List of lastname, phone, age and medical record from each person with
+	 * same family's name gathered by address
+	 * 
+	 * @param List<String> listOfFirestationNb
+	 * 
+	 * @return List<PersonUrl4DTO>
+	 * 
+	 */
 	public List<PersonUrl4DTO> getFamilyWith(List<String> listOfFirestationNb) {
 
 		List<PersonUrl4DTO> lp5 = new ArrayList<>();
@@ -428,8 +473,14 @@ public class UrlService {
 		return lp5;
 	}
 
-	// URL6
-	// List of lastname, address, age, mail and medical record from each person
+	/*
+	 * URL6 List of lastname, address, age, mail and medical record from each person
+	 * 
+	 * @param String firstName, String lastName
+	 * 
+	 * @return List<PersonUrl6DTO>
+	 * 
+	 */
 	public List<PersonUrl6DTO> getPersonWith(String firstName, String lastName) {
 
 		List<PersonUrl6DTO> lp6 = new ArrayList<>();
@@ -455,19 +506,27 @@ public class UrlService {
 		return lp6;
 	}
 
-	// list of persons with same family's name
+	/*
+	 * list of persons with same family's name
+	 * 
+	 * @param String lastName
+	 * 
+	 * @return List<PersonDTO>
+	 */
 	private List<PersonDTO> getPersonWithSameFamily(String lastName) {
-		List<PersonDTO> lpDto = new ArrayList<>();
-		for (PersonDTO onePersDto : personService.findAllPersons()) {
-			if (onePersDto.getLastName().equalsIgnoreCase(lastName)) {
-				lpDto.add(onePersDto);
-			}
-		}
-		return lpDto;
+
+		return personService.findAllPersons().stream()
+				.filter(personDto -> personDto.getLastName().equalsIgnoreCase(lastName)).collect(Collectors.toList());
 	}
 
-	// URL7
-	// list mails of each person from this city
+	/*
+	 * URL7 List mails of each person from this city
+	 * 
+	 * @param String city
+	 * 
+	 * @return List<String>
+	 * 
+	 */
 	public List<String> getAllEmailsFrom(String city) {
 		List<String> ls = null;
 

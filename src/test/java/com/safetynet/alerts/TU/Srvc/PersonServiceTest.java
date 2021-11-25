@@ -1,7 +1,8 @@
-package com.safetynet.alerts.TI;
+package com.safetynet.alerts.TU.Srvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ class PersonServiceTest {
 	 */
 	@ParameterizedTest
 	@MethodSource("PersonDTOSource")
-	@DisplayName("Add person")
+	@DisplayName("Add a personDTO")
 	void AddPersonTest_ShouldReturnPersonDTO(PersonDTO personDTO) {
 		// Arrange
 		Person person = new Person("loulou", "Ysengrin", "5 rue de l'atre", "Laplaine", "112233", "9876543210",
@@ -76,7 +77,7 @@ class PersonServiceTest {
 	 * This method checks finding All PersonsDTO
 	 */
 	@Test
-	@DisplayName("find persons")
+	@DisplayName("find all personsDTO")
 	void FindAllPersonsTest_ShouldReturnListOfPersonsDTO() {
 		// Arrange
 		List<Person> listePasDto = new ArrayList<>();
@@ -96,4 +97,58 @@ class PersonServiceTest {
 		assertNotNull(lpDTO, "list not null.");
 	}
 
+	/**
+	 * This method checks deleting a PersonDTO
+	 */
+	@Test
+	@DisplayName("delete a personDTO")
+	void DeleteAPersonTest_ShouldReturnTrue() {
+		// Arrange
+		Boolean ret = false;
+		PersonDTO personDTO = new PersonDTO("Jojo", "Lapin", "5 rue du terrier", "Laplaine", "123456", "9876543210",
+				"jojo@lapin.com");
+		when(personRepository.deleteAPerson(Mockito.any(Person.class))).thenReturn(true);
+
+		// Act
+		ret = personService.deleteOnePerson(personDTO);
+		// Assert
+		assertTrue(ret);
+	}
+
+	/**
+	 * This method checks updating a PersonDTO
+	 */
+	@Test
+	@DisplayName("update a personDTO")
+	void UpdateAPersonTest_ShouldReturnPersonDTO() {
+		// Arrange
+		Person person = new Person("Jojo", "Lapin", "5 rue du terrier", "Laplaine", "zip3000", "1122334455",
+				"jo@lapin.com");
+		PersonDTO personDTO = new PersonDTO("Jojo", "Lapin", "5 rue du terrier", "Laplaine", "123456", "9876543210",
+				"jojo@lapin.com");
+		when(personRepository.updateAPerson(Mockito.any(Person.class))).thenReturn(person);
+
+		// Act
+		personDTO = personService.updateOnePerson(personDTO);
+		// Assert
+		assertNotNull(personDTO, "personDTO not null");
+	}
+
+	/**
+	 * This method checks getting a PersonDTO
+	 */
+	@Test
+	@DisplayName("get a person")
+	void GetAPersonTest_ShouldReturnPersonDTO() {
+		// Arrange
+		PersonDTO personDTO = null;
+		Person person = new Person("loulou", "Ysengrin", "5 rue de l'atre", "Laplaine", "112233", "9876543210",
+				"lou@ysengrin.com");
+		when(personRepository.readAPerson(Mockito.anyString(), Mockito.anyString())).thenReturn(person);
+
+		// Act
+		personDTO = personService.getOnePerson("jojo", "lapin");
+		// Assert
+		assertNotNull(personDTO, "personDTO not null.");
+	}
 }

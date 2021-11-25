@@ -23,16 +23,13 @@ import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.service.UrlService;
 
 @ExtendWith(MockitoExtension.class)
-class Url7PersonServiceTest {
+class Url7Test {
 	// To be tested
 	@InjectMocks
 	private UrlService us = new UrlService();
 
 	@Mock
 	private PersonService personService;
-
-//	@Mock
-//	private PersonRepository personRepository;
 
 	@BeforeAll
 	private static void setUp() {
@@ -69,30 +66,7 @@ class Url7PersonServiceTest {
 	// with its data
 	private static Stream<Arguments> CitySource() {
 		String city1 = "Culver";
-		String city2 = "Lyon";
-		return Stream.of(Arguments.of(city1), Arguments.of(city2));
+		return Stream.of(Arguments.of(city1));
 	}
 
-	/**
-	 * This method checks getting emails of all Persons from a city
-	 */
-//	@ParameterizedTest
-//	@MethodSource("CityNullSource")
-//	@DisplayName("Get none email of persons from city == null")
-//	void GetEmailsOfPersonsFromNullCityTest_ShouldReturnNull(String city) {
-//		// arrange
-//		List<String> ls = new ArrayList<>();
-//
-//		// act
-//		ls = us.getAllEmailsFrom(city);
-//		// assert
-//		assertThat(ls).isNullOrEmpty();
-//	}
-//
-//	// with its data
-//	private static Stream<Arguments> CityNullSource() {
-//		String city1 = "";
-//		String city3 = null;
-//		return Stream.of(Arguments.of(city1), null, Arguments.of(city3));
-//	}
 }

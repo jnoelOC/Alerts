@@ -17,14 +17,18 @@ import com.safetynet.alerts.dto.PersonUrl4DTO;
 import com.safetynet.alerts.dto.PersonUrl6DTO;
 import com.safetynet.alerts.dto.PersonsInfoDTO;
 import com.safetynet.alerts.dto.PersonsUrl4DTO;
-import com.safetynet.alerts.service.UrlService;
+import com.safetynet.alerts.service.IUrlService;
 
 @RestController
 public class UrlController {
 	public static final Logger logger = LogManager.getLogger(UrlController.class);
 
+	private final IUrlService us;
+
 	@Autowired
-	UrlService us;
+	public UrlController(final IUrlService urlService) {
+		this.us = urlService;
+	}
 
 	// URL1 : List of persons covered by this corresponding station
 	@GetMapping("/firestation")
@@ -116,9 +120,10 @@ public class UrlController {
 		lp6 = us.getPersonWith(firstName, lastName);
 
 		if (lp6 == null) {
-			logger.error("Erreur dans Url6 : status Non trouvé.");
+			logger.error("Url6 : status Non trouvé.");
 			return new ResponseEntity<>(lp6, HttpStatus.NOT_FOUND);
 		} else {
+			logger.info("Url6 : Liste de personnes trouvées.");
 			return new ResponseEntity<>(lp6, HttpStatus.FOUND);
 		}
 	}
@@ -126,6 +131,17 @@ public class UrlController {
 	// URL7 : Emails list of all persons from this city
 	@GetMapping("/communityEmail")
 	public List<String> getEmailsFrom(@RequestParam String city) {
-		return us.getAllEmailsFrom(city);
+		List<String> ls = null;
+
+		ls = us.getAllEmailsFrom(city);
+
+		if (ls == null) {
+			logger.error("Erreur dans Url7 : status Non trouvé.");
+		} else {
+			logger.info("Url7 : Liste de mails trouvés.");
+		}
+
+		return ls;
+
 	}
 }
