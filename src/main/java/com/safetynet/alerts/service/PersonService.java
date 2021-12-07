@@ -68,7 +68,8 @@ public class PersonService implements IPersonService {
 	}
 
 	public List<String> getAllEmailsFrom(String city) {
-		if (city.isBlank()) {
+//		if (city.isBlank()) {
+		if (city.equals("")) {
 			return Collections.emptyList();
 		} else {
 			return personRepository.getEmailsFrom(city);

@@ -7,6 +7,10 @@ import java.time.format.DateTimeFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/*
+ * Class for two methods : calculateAgeOfPerson() and transformFomCustomToIsoFormat()
+ */
+
 public class CalculateAge {
 	public static final Logger logger = LogManager.getLogger(CalculateAge.class);
 
@@ -14,6 +18,13 @@ public class CalculateAge {
 		// constructor
 	}
 
+	/*
+	 * calculate age of a person
+	 * 
+	 * @param String customBirthDate
+	 * 
+	 * @return int age
+	 */
 	public int calculateAgeOfPerson(String customBirthDate) {
 		int age = 0;
 
@@ -36,7 +47,13 @@ public class CalculateAge {
 		return age;
 	}
 
-	// transform from customFormat "MM/dd/yyyy" to isoFormat "yyyy-MM-dd"
+	/*
+	 * transform from customFormat "MM/dd/yyyy" to isoFormat "yyyy-MM-dd"
+	 * 
+	 * @param String customFormat
+	 * 
+	 * @return String isoFormatString
+	 */
 	public String transformFomCustomToIsoFormat(String customFormat) {
 		String isoFormatString = null;
 		String year;

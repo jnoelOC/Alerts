@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.PersonDTO;
@@ -33,19 +34,20 @@ public class PersonController {
 
 		List<PersonDTO> lpDto = personService.findAllPersons();
 
-		if (lpDto.isEmpty() || lpDto == null) {
+		if (lpDto.isEmpty()) {
 			throw new PNotFoundException();
 		}
 		return lpDto;
 	}
 
-	@GetMapping("/person/{firstName}/{lastName}")
-	public ResponseEntity<PersonDTO> findOnePerson(@PathVariable String firstName, @PathVariable String lastName) {
-
+	@GetMapping("/person")
+	public ResponseEntity<PersonDTO> findOnePerson(@RequestParam String firstName, @RequestParam String lastName) {
 		PersonDTO personDTO = personService.getOnePerson(firstName, lastName);
 		if (personDTO == null) {
+			logger.error("Erreur dans PersonController : status Non trouvé.");
 			return new ResponseEntity<>(personDTO, HttpStatus.NOT_FOUND);
 		} else {
+			logger.info("status personne trouvée.");
 			return new ResponseEntity<>(personDTO, HttpStatus.FOUND);
 		}
 

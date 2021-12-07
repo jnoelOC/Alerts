@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.MedicalRecordDTO;
@@ -34,15 +35,15 @@ public class MedicalRecordController {
 
 		List<MedicalRecordDTO> lmr = medicalrecordService.getAllMedicalRecords();
 		// Faire du TDD !!!
-		if (lmr.isEmpty() || lmr == null) {
+		if (lmr.isEmpty()) {
 			throw new MRNotFoundException();
 		}
 		return lmr;
 	}
 
-	@GetMapping("/medicalrecord/{firstName}/{lastName}")
-	public ResponseEntity<MedicalRecordDTO> findOneMedicalRecord(@PathVariable String firstName,
-			@PathVariable String lastName) {
+	@GetMapping("/medicalrecord")
+	public ResponseEntity<MedicalRecordDTO> findOneMedicalRecord(@RequestParam String firstName,
+			@RequestParam String lastName) {
 
 		MedicalRecordDTO oneMrDTO = medicalrecordService.getOneMedicalRecord(firstName, lastName);
 		if (oneMrDTO == null) {
