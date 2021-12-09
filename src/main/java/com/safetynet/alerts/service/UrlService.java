@@ -224,7 +224,7 @@ public class UrlService implements IUrlService {
 	 * @return List<PersonInfoDTO>
 	 * 
 	 */
-	private List<PersonInfoDTO> transformFromPersonToPersonInfoDTO(List<Person> listOfPersonsCoveredByFirestation) {
+	public List<PersonInfoDTO> transformFromPersonToPersonInfoDTO(List<Person> listOfPersonsCoveredByFirestation) {
 		// Transform from Person to PersonInfoDTO :firstName, lastName, address, phone
 		return listOfPersonsCoveredByFirestation.stream().map(onePerson -> {
 			PersonInfoDTO pi = new PersonInfoDTO();
@@ -245,7 +245,7 @@ public class UrlService implements IUrlService {
 	 * @return List<Firestation>
 	 * 
 	 */
-	private List<Firestation> retrieveStationsAssociatedWith(String stationNumber) {
+	public List<Firestation> retrieveStationsAssociatedWith(String stationNumber) {
 		return firestationService.getSeveralFirestations(stationNumber).stream()
 				.map(oneFirestationDTO -> firestationMapper.toFirestation(oneFirestationDTO))
 				.collect(Collectors.toList());
@@ -513,7 +513,7 @@ public class UrlService implements IUrlService {
 	 * 
 	 * @return List<PersonDTO>
 	 */
-	private List<PersonDTO> getPersonWithSameFamily(String lastName) {
+	public List<PersonDTO> getPersonWithSameFamily(String lastName) {
 
 		return personService.findAllPersons().stream()
 				.filter(personDto -> personDto.getLastName().equalsIgnoreCase(lastName)).collect(Collectors.toList());
