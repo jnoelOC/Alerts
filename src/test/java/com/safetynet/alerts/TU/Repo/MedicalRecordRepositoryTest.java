@@ -120,7 +120,7 @@ class MedicalRecordRepositoryTest {
 		MedicalRecord mr = medicalRecordRepo.readAMedicalRecord(firstName, lastName);
 
 		// Assert
-		assertNotNull(mr, "firestation not null");
+		assertNotNull(mr, "medical record not null");
 	}
 
 	// with its data
@@ -137,4 +137,138 @@ class MedicalRecordRepositoryTest {
 				Arguments.of(FirstName2, LastName2));
 	}
 
+	/**
+	 * This method checks getting one medical record for different values
+	 */
+	@ParameterizedTest
+	@MethodSource("MedicalRecordNullSource1")
+	@DisplayName("Get one medical record at null")
+	void GetOneMedicalRecordNullTest_ShouldReturnNull(String firstName, String lastName) {
+		// Arrange
+
+		// Act
+		MedicalRecord mr = medicalRecordRepo.readAMedicalRecord(firstName, lastName);
+
+		// Assert
+		assertNull(mr, "medical record null");
+	}
+
+	// with its data
+	private static Stream<Arguments> MedicalRecordNullSource1() {
+
+		String FirstName = null;
+		String LastName = null;
+		String FirstName1 = "Allison";
+		String LastName1 = null;
+		String FirstName2 = null;
+		String LastName2 = "Boyd";
+
+		return Stream.of(Arguments.of(FirstName, LastName), Arguments.of(FirstName1, LastName1),
+				Arguments.of(FirstName2, LastName2));
+	}
+
+	/**
+	 * This method checks updating medical record for different values
+	 */
+	@ParameterizedTest
+	@MethodSource("UpdateMedicalRecordSource")
+	@DisplayName("Update one medical record")
+	void UpdateMedRecTest_ShouldReturnMedicalRecord(MedicalRecord medicalRecord) {
+		// arrange
+
+		// act
+		MedicalRecord medRec = medicalRecordRepo.updateAMedicalRecord(medicalRecord);
+		// assert
+		assertThat(medRec).isNotNull();
+	}
+
+	// with its data
+	private static Stream<Arguments> UpdateMedicalRecordSource() {
+
+		MedicalRecord mr = new MedicalRecord("Allison", "Boyd", "03/15/1965", new String[] { "aznol:200mg" },
+				new String[] { "nillacilan" });
+		MedicalRecord mr1 = new MedicalRecord("john", "Boyd", "03/06/1984",
+				new String[] { "aznol:350mg", "hydrapermazol:100mg" }, new String[] { "nillacilan" });
+		MedicalRecord mr3 = new MedicalRecord("Roger", "Boyd", "09/06/2017", new String[] {}, new String[] {});
+
+		return Stream.of(Arguments.of(mr), Arguments.of(mr1), Arguments.of(mr3));
+	}
+
+	/**
+	 * This method checks not updating medical record for different values
+	 */
+	@ParameterizedTest
+	@MethodSource("updateNullSource")
+	@DisplayName("Not update one medical record == null")
+	void UpdateMedicalRecordTest_ShouldReturnNull(MedicalRecord medRecord) {
+		// Arrange
+
+		// Act
+		MedicalRecord medRec = medicalRecordRepo.updateAMedicalRecord(medRecord);
+
+		// Assert
+		assertNull(medRec, "medical record is completely null");
+	}
+
+	// with its data
+	private static Stream<Arguments> updateNullSource() {
+
+		MedicalRecord medRecord = null;
+		// this medical record already exists
+		MedicalRecord medRecord2 = new MedicalRecord("allison", "Bo", "03/15/1965", new String[] { "aznol:200mg" },
+				new String[] { "nillacilan" });
+		return Stream.of(Arguments.of(medRecord), Arguments.of(medRecord2), null);
+	}
+
+	/**
+	 * This method checks deleting medical record for different values
+	 */
+	@ParameterizedTest
+	@MethodSource("DeleteMedicalRecordSource")
+	@DisplayName("Delete one medical record")
+	void DeleteMedRecTest_ShouldReturnMedicalRecord(MedicalRecord medicalRecord) {
+		// arrange
+
+		// act
+		Boolean ret = medicalRecordRepo.deleteAMedicalRecord(medicalRecord);
+		// assert
+		assertThat(ret).isTrue();
+	}
+
+	// with its data
+	private static Stream<Arguments> DeleteMedicalRecordSource() {
+
+		MedicalRecord mr = new MedicalRecord("Allison", "Boyd", "03/15/1965", new String[] { "aznol:200mg" },
+				new String[] { "nillacilan" });
+		MedicalRecord mr1 = new MedicalRecord("john", "Boyd", "03/06/1984",
+				new String[] { "aznol:350mg", "hydrapermazol:100mg" }, new String[] { "nillacilan" });
+		MedicalRecord mr3 = new MedicalRecord("Roger", "Boyd", "09/06/2017", new String[] {}, new String[] {});
+
+		return Stream.of(Arguments.of(mr), Arguments.of(mr1), Arguments.of(mr3));
+	}
+
+	/**
+	 * This method checks not deleting medical record for different values
+	 */
+	@ParameterizedTest
+	@MethodSource("deleteNullSource")
+	@DisplayName("Not delete one medical record == null")
+	void DeleteMedicalRecordTest_ShouldReturnNull(MedicalRecord medRecord) {
+		// Arrange
+
+		// Act
+		Boolean ret = medicalRecordRepo.deleteAMedicalRecord(medRecord);
+		// assert
+		assertThat(ret).isFalse();
+	}
+
+	// with its data
+	private static Stream<Arguments> deleteNullSource() {
+
+		MedicalRecord medRecord = null;
+		// this medical record already exists
+		MedicalRecord medRecord2 = new MedicalRecord("allison", "Bo", "03/15/1965", new String[] { "aznol:200mg" },
+				new String[] { "nillacilan" });
+		return Stream.of(Arguments.of(medRecord), Arguments.of(medRecord2), null);
+	}
 }

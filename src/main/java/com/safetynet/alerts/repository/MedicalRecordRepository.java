@@ -18,32 +18,28 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 
 	public MedicalRecord save(MedicalRecord medicalrecord) {
 
-		try {
-			boolean mrFound = false;
-			if (medicalrecord == null) {
-				mrFound = true;
-			} else {
+		boolean mrFound = false;
+		if (medicalrecord == null) {
+			mrFound = true;
+		} else {
 
-				for (MedicalRecord oneMedicalRecord : medicalrecords) {
+			for (MedicalRecord oneMedicalRecord : medicalrecords) {
 
-					if (oneMedicalRecord.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
-							&& oneMedicalRecord.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
+				if (oneMedicalRecord.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
+						&& oneMedicalRecord.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
 
-						mrFound = true;
-						break;
-					}
+					mrFound = true;
+					break;
 				}
 			}
-			if (!mrFound) {
-				medicalrecords.add(medicalrecord);
-				return medicalrecord;
-			} else { // ALREADY CREATED
-				return null;
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
-		return null;
+		if (!mrFound) {
+			medicalrecords.add(medicalrecord);
+			return medicalrecord;
+		} else { // ALREADY CREATED
+			return null;
+		}
+
 	}
 
 	public List<MedicalRecord> findAllMedicalRecords() {
@@ -52,39 +48,39 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 
 	public MedicalRecord readAMedicalRecord(String firstname, String lastname) {
 
-		try {
-			for (MedicalRecord oneMedicalRecord : medicalrecords) {
+		if (firstname == null || lastname == null) {
+			return null;
+		}
 
-				if (oneMedicalRecord.getFirstName().equalsIgnoreCase(firstname)
-						&& oneMedicalRecord.getLastName().equalsIgnoreCase(lastname)) {
+		for (MedicalRecord oneMedicalRecord : medicalrecords) {
 
-					return oneMedicalRecord;
-				}
+			if (oneMedicalRecord.getFirstName().equalsIgnoreCase(firstname)
+					&& oneMedicalRecord.getLastName().equalsIgnoreCase(lastname)) {
+
+				return oneMedicalRecord;
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 		return null;
 	}
 
 	public MedicalRecord updateAMedicalRecord(MedicalRecord medicalrecord) {
 
-		try {
-			for (MedicalRecord oneMedicalRecord : medicalrecords) {
-
-				if (oneMedicalRecord.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
-						&& oneMedicalRecord.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
-
-					oneMedicalRecord.setBirthDate(medicalrecord.getBirthDate());
-					oneMedicalRecord.setMedications(medicalrecord.getMedications());
-					oneMedicalRecord.setAllergies(medicalrecord.getAllergies());
-
-					return oneMedicalRecord;
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		if (medicalrecord == null) {
+			return null;
 		}
+		for (MedicalRecord oneMedicalRecord : medicalrecords) {
+
+			if (oneMedicalRecord.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
+					&& oneMedicalRecord.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
+
+				oneMedicalRecord.setBirthDate(medicalrecord.getBirthDate());
+				oneMedicalRecord.setMedications(medicalrecord.getMedications());
+				oneMedicalRecord.setAllergies(medicalrecord.getAllergies());
+
+				return oneMedicalRecord;
+			}
+		}
+
 		return null;
 	}
 
@@ -92,7 +88,7 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 	public boolean deleteAMedicalRecord(MedicalRecord medicalrecord) {
 
 		boolean isRemoved = false;
-		try {
+		if (medicalrecord != null) {
 			for (MedicalRecord oneMedicalRecord : medicalrecords) {
 
 				if (oneMedicalRecord.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
@@ -102,8 +98,6 @@ public class MedicalRecordRepository implements IMedicalRecordRepository {
 					break;
 				}
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 		return isRemoved;
 	}

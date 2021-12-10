@@ -46,17 +46,25 @@ public class PersonRepository implements IPersonRepository {
 
 	public Person readAPerson(String firstname, String lastname) {
 
-		for (Person pers : persons) {
-			if (pers.getFirstName().equalsIgnoreCase(firstname) && pers.getLastName().equalsIgnoreCase(lastname)) {
+		if (firstname == null || lastname == null) {
+			return null;
+		} else {
+			for (Person pers : persons) {
+				if (pers.getFirstName().equalsIgnoreCase(firstname) && pers.getLastName().equalsIgnoreCase(lastname)) {
 
-				return pers;
+					return pers;
+				}
 			}
+			return null;
 		}
 
-		return null;
 	}
 
 	public Person updateAPerson(Person person) {
+
+		if (person == null) {
+			return null;
+		}
 
 		for (Person pers : persons) {
 			if (pers.getFirstName().equalsIgnoreCase(person.getFirstName())
@@ -76,6 +84,9 @@ public class PersonRepository implements IPersonRepository {
 
 	public boolean deleteAPerson(Person person) {
 		boolean isRemoved = false;
+		if (person == null) {
+			return isRemoved;
+		}
 		for (Person pers : persons) {
 			if (pers.getFirstName().equalsIgnoreCase(person.getFirstName())
 					&& pers.getLastName().equalsIgnoreCase(person.getLastName())) {

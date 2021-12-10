@@ -1,6 +1,7 @@
 package com.safetynet.alerts.repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,36 +15,30 @@ public class FirestationRepository implements IFirestationRepository {
 
 	public static final Logger logger = LogManager.getLogger(FirestationRepository.class);
 
-	private List<Firestation> firestations = new ArrayList<Firestation>();
+	private List<Firestation> firestations = new ArrayList<>();
 
 	public Firestation save(Firestation firestation) {
 
-		try {
-			boolean fFound = false;
+		boolean fFound = false;
 
-			if (firestation == null) {
-				fFound = true;
-			} else {
-				for (Firestation fs : firestations) {
-					if (fs.getAddress().equalsIgnoreCase(firestation.getAddress())) {
+		if (firestation == null) {
+			fFound = true;
+		} else {
+			for (Firestation fs : firestations) {
+				if (fs.getAddress().equalsIgnoreCase(firestation.getAddress())) {
 
-						fFound = true;
-						break;
-					}
+					fFound = true;
+					break;
 				}
 			}
-
-			if (!fFound) {
-				firestations.add(firestation);
-				return firestation;
-			} else { // ALREADY CREATED
-				return null;
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
-		return null;
 
+		if (!fFound) {
+			firestations.add(firestation);
+			return firestation;
+		} else { // ALREADY CREATED
+			return null;
+		}
 	}
 
 	public List<Firestation> findAllFirestations() {
@@ -52,53 +47,55 @@ public class FirestationRepository implements IFirestationRepository {
 
 	public Firestation readAFirestation(String station, String address) {
 
-		try {
-			for (Firestation fs : firestations) {
-				if (fs.getStation().equals(station) && fs.getAddress().equalsIgnoreCase(address)) {
-
-					return fs;
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		if (station == null || address == null) {
+			return null;
 		}
-		return null;
 
+		for (Firestation fs : firestations) {
+			if (fs.getStation().equals(station) && fs.getAddress().equalsIgnoreCase(address)) {
+
+				return fs;
+			}
+		}
+
+		return null;
 	}
 
 	public List<Firestation> readSeveralFirestations(String station) {
 
 		List<Firestation> fs = new ArrayList<>();
 
-		try {
-			for (Firestation oneFirestation : firestations) {
-
-				if (oneFirestation.getStation().equals(station)) {
-
-					fs.add(oneFirestation);
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		if (station == null) {
+			return Collections.emptyList();
 		}
+
+		for (Firestation oneFirestation : firestations) {
+
+			if (oneFirestation.getStation().equals(station)) {
+
+				fs.add(oneFirestation);
+			}
+		}
+
 		return fs;
 	}
 
 	@Override
 	public Firestation updateAFirestation(Firestation firestation) {
 
-		try {
-			for (Firestation oneFirestation : firestations) {
-
-				if (oneFirestation.getAddress().equalsIgnoreCase(firestation.getAddress())) {
-
-					oneFirestation.setStation(firestation.getStation());
-					return oneFirestation;
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		if (firestation == null) {
+			return null;
 		}
+
+		for (Firestation oneFirestation : firestations) {
+
+			if (oneFirestation.getAddress().equalsIgnoreCase(firestation.getAddress())) {
+
+				oneFirestation.setStation(firestation.getStation());
+				return oneFirestation;
+			}
+		}
+
 		return null;
 	}
 
@@ -106,7 +103,8 @@ public class FirestationRepository implements IFirestationRepository {
 	public boolean deleteAFirestation(Firestation firestation) {
 
 		boolean isRemoved = false;
-		try {
+
+		if (firestation != null) {
 			for (Firestation oneFirestation : firestations) {
 
 				if (oneFirestation.getStation().equalsIgnoreCase(firestation.getStation())
@@ -116,8 +114,6 @@ public class FirestationRepository implements IFirestationRepository {
 					break;
 				}
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 		return isRemoved;
 	}
