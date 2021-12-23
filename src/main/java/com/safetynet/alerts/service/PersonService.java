@@ -62,7 +62,7 @@ public class PersonService implements IPersonService {
 		return personMapper.toPersonDTO(p);
 	}
 
-	public boolean deleteOnePerson(PersonDTO personDTO) {
+	public Boolean deleteOnePerson(PersonDTO personDTO) {
 		Person person = personMapper.toPerson(personDTO);
 		return personRepository.deleteAPerson(person);
 	}

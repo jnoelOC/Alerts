@@ -116,7 +116,7 @@ class FirestationRepositoryTest {
 		// Arrange
 
 		// Act
-		Firestation f = firestationRepo.readAFirestation(stationNumber, stationAddress);
+		Firestation f = firestationRepo.readAFirestation(stationAddress, stationNumber);
 
 		// Assert
 		assertNotNull(f, "firestation not null");

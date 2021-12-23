@@ -77,7 +77,7 @@ class UrlControllerIT {
 	@DisplayName("Test Url2")
 	void whenValidInputUrl2_thenReturns302() throws Exception {
 
-		mockMvc.perform(get("/childAlert").param("address", "1509 Culver St").contentType("application/json"))
+		mockMvc.perform(get("/childAlert").param("address", "892 Downing Ct").contentType("application/json"))
 				.andExpect(status().isFound());
 	}
 

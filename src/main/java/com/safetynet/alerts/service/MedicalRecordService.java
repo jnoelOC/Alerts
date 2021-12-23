@@ -23,10 +23,9 @@ public class MedicalRecordService implements IMedicalRecordService {
 
 	private MedicalRecordMapper medicalrecordMapper = new MedicalRecordMapper();
 
-	@Override
 	public List<MedicalRecordDTO> getAllMedicalRecords() {
 		List<MedicalRecord> listNotDto = medicalrecordRepository.findAllMedicalRecords();
-		List<MedicalRecordDTO> listMedicalRecordDto = new ArrayList<MedicalRecordDTO>();
+		List<MedicalRecordDTO> listMedicalRecordDto = new ArrayList<>();
 
 		for (MedicalRecord medicalrecord : listNotDto) {
 			MedicalRecordDTO medicalrecordDTO = medicalrecordMapper.toMedicalRecordDTO(medicalrecord);
@@ -36,7 +35,6 @@ public class MedicalRecordService implements IMedicalRecordService {
 		return listMedicalRecordDto;
 	}
 
-	@Override
 	public MedicalRecordDTO addMedicalRecord(MedicalRecordDTO medicalrecordDTO) {
 
 		MedicalRecordDTO mrDTO;
@@ -50,7 +48,6 @@ public class MedicalRecordService implements IMedicalRecordService {
 		return mrDTO;
 	}
 
-	@Override
 	public MedicalRecordDTO getOneMedicalRecord(String firstName, String lastName) {
 
 		MedicalRecordDTO medicalrecordDTO;
@@ -63,14 +60,12 @@ public class MedicalRecordService implements IMedicalRecordService {
 		return medicalrecordDTO;
 	}
 
-	@Override
 	public MedicalRecordDTO updateOneMedicalRecord(MedicalRecordDTO medicalrecordDTO) {
 		MedicalRecord mr = medicalrecordMapper.toMedicalRecord(medicalrecordDTO);
 		MedicalRecord medicalrecord = medicalrecordRepository.updateAMedicalRecord(mr);
 		return medicalrecordMapper.toMedicalRecordDTO(medicalrecord);
 	}
 
-	@Override
 	public boolean deleteOneMedicalRecord(MedicalRecordDTO medicalrecordDTO) {
 		MedicalRecord medicalrecord = medicalrecordMapper.toMedicalRecord(medicalrecordDTO);
 		return medicalrecordRepository.deleteAMedicalRecord(medicalrecord);

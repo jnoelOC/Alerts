@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.FirestationDTO;
@@ -29,13 +30,13 @@ public class FirestationController {
 
 	@GetMapping("/firestations")
 	public List<FirestationDTO> findAllFirestations() {
-
+		logger.info("Get Casernes trouvées.");
 		return firestationService.getAllFirestations();
 	}
 
 	@GetMapping("/firestation/{station}")
 	public List<FirestationDTO> findSeveralFirestation(@PathVariable String station) {
-
+		logger.info("Get : Caserne num " + station + " trouvée.");
 		return firestationService.getSeveralFirestations(station);
 
 	}
@@ -46,8 +47,10 @@ public class FirestationController {
 
 		FirestationDTO firestationDTO = firestationService.getOneFirestation(station, address);
 		if (firestationDTO == null) {
+			logger.error("Erreur dans Get caserne : status Non trouvé.");
 			return new ResponseEntity<>(firestationDTO, HttpStatus.NOT_FOUND);
 		} else {
+			logger.info("Get : Caserne trouvée.");
 			return new ResponseEntity<>(firestationDTO, HttpStatus.FOUND);
 		}
 
@@ -58,14 +61,16 @@ public class FirestationController {
 
 		FirestationDTO fDTO = firestationService.updateOneFirestation(firestationDTO);
 		if (fDTO == null) {
+			logger.error("Erreur dans update caserne : status Non trouvé.");
 			return new ResponseEntity<>(fDTO, HttpStatus.NOT_MODIFIED);
 		} else {
+			logger.info("Update caserne : Ok.");
 			return new ResponseEntity<>(fDTO, HttpStatus.OK);
 		}
 	}
 
-	@DeleteMapping("/firestation/delete/{station}/{address}")
-	public ResponseEntity<Void> deleteFirestation(@PathVariable String station, @PathVariable String address) {
+	@DeleteMapping("/firestation/delete")
+	public ResponseEntity<Void> deleteFirestation(@RequestParam String address, @RequestParam String station) {
 		boolean isRemoved = false;
 		try {
 			FirestationDTO firestationDTO = firestationService.getOneFirestation(address, station);
@@ -78,8 +83,10 @@ public class FirestationController {
 		}
 
 		if (isRemoved) {
+			logger.info("Delete caserne : Ok.");
 			return new ResponseEntity<>(HttpStatus.FOUND);
 		} else {
+			logger.error("Erreur dans delete caserne : status Non trouvé.");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
@@ -89,9 +96,11 @@ public class FirestationController {
 
 		FirestationDTO fDTO = firestationService.addFirestation(firestationDTO);
 		if (fDTO == null) {
+			logger.error("Erreur dans create caserne : status Non trouvé.");
 			// return new ResponseEntity<>(fDTO, HttpStatus.NOT_FOUND);
 			throw new FAlreadyCreatedException();
 		} else {
+			logger.info("Create caserne : Ok.");
 			return new ResponseEntity<>(fDTO, HttpStatus.CREATED);
 		}
 	}

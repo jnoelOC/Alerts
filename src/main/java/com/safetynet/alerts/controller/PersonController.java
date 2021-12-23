@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.PersonDTO;
-import com.safetynet.alerts.exception.PAlreadyCreatedException;
-import com.safetynet.alerts.exception.PNotFoundException;
 import com.safetynet.alerts.service.IPersonService;
 
 @RestController
@@ -35,8 +32,11 @@ public class PersonController {
 		List<PersonDTO> lpDto = personService.findAllPersons();
 
 		if (lpDto.isEmpty()) {
-			throw new PNotFoundException();
+			logger.error("Erreur dans Find all persons : status Non trouvé.");
+			return null;
+			// throw new PNotFoundException();
 		}
+		logger.info("personnes trouvées.");
 		return lpDto;
 	}
 
@@ -58,29 +58,33 @@ public class PersonController {
 
 		PersonDTO pDTO = personService.updateOnePerson(personDTO);
 		if (pDTO == null) {
+			logger.error("Erreur dans update personne : status Non trouvé.");
 			return new ResponseEntity<>(pDTO, HttpStatus.NOT_FOUND);
 		} else {
+			logger.info("Update personne : status Ok.");
 			return new ResponseEntity<>(pDTO, HttpStatus.OK);
 		}
 	}
 
-	@DeleteMapping("/person/delete/{firstName}/{lastName}")
-	public ResponseEntity<Void> deletePerson(@PathVariable String firstName, @PathVariable String lastName) {
+	@DeleteMapping("/person/delete")
+	public ResponseEntity<Boolean> deletePerson(@RequestParam String firstName, @RequestParam String lastName) {
 
-		boolean isRemoved = false;
-		try {
-			PersonDTO personDTO = personService.getOnePerson(firstName, lastName);
-			isRemoved = personService.deleteOnePerson(personDTO);
-		} catch (NullPointerException e) {
-			logger.error("Error : impossible de supprimer la personne. %s ", e.toString());
-		} catch (Exception ex) {
-			logger.error("Error : %s ", ex.toString());
-		}
+		Boolean isRemoved = false;
+//		try {
+		PersonDTO personDTO = personService.getOnePerson(firstName, lastName);
+		isRemoved = personService.deleteOnePerson(personDTO);
+//		} catch (NullPointerException e) {
+//			logger.error("Error : impossible de supprimer la personne. %s ", e.toString());
+//		} catch (Exception ex) {
+//			logger.error("Error : %s ", ex.toString());
+//		}
 
-		if (isRemoved) {
-			return new ResponseEntity<>(HttpStatus.FOUND);
+		if (Boolean.TRUE.equals(isRemoved)) {
+			logger.info("Delete personne : status Trouvée.");
+			return new ResponseEntity<>(true, HttpStatus.FOUND);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			logger.error("Erreur dans delete personne : status Non trouvée.");
+			return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
 		}
 
 	}
@@ -90,9 +94,11 @@ public class PersonController {
 
 		PersonDTO pDTO = personService.addPerson(personDTO);
 		if (pDTO == null) {
-			// return new ResponseEntity<>(pDTO, HttpStatus.NOT_FOUND);
-			throw new PAlreadyCreatedException();
+			logger.error("Erreur dans create person : status Non trouvée.");
+			return new ResponseEntity<>(pDTO, HttpStatus.NOT_FOUND);
+			// throw new PAlreadyCreatedException();
 		} else {
+			logger.info("Create personne : status Créée.");
 			return new ResponseEntity<>(pDTO, HttpStatus.CREATED);
 		}
 

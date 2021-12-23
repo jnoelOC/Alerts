@@ -45,7 +45,7 @@ public class FirestationRepository implements IFirestationRepository {
 		return firestations;
 	}
 
-	public Firestation readAFirestation(String station, String address) {
+	public Firestation readAFirestation(String address, String station) {
 
 		if (station == null || address == null) {
 			return null;
